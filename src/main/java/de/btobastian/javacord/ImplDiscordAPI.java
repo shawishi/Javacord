@@ -154,8 +154,7 @@ public class ImplDiscordAPI implements DiscordAPI {
     public void connectBlocking() {
         if (token == null || !checkTokenBlocking(token)) {
             if (email == null || password == null) {
-                logger.warn("No valid token provided AND missing email or password. Connecting not possible!");
-                return;
+                throw new IllegalArgumentException("No valid token provided AND missing email or password. Connecting not possible!");
             }
             token = requestTokenBlocking();
         }
@@ -164,7 +163,7 @@ public class ImplDiscordAPI implements DiscordAPI {
             socketAdapter = new DiscordWebsocketAdapter(new URI(gateway), this, false);
         } catch (URISyntaxException e) {
             logger.warn("Something went wrong while connecting. Please contact the developer!", e);
-            return;
+            throw new IllegalArgumentException("Invalid gateway url. Please contact the developer!");
         }
         try {
             if (!socketAdapter.isReady().get()) {
@@ -172,6 +171,7 @@ public class ImplDiscordAPI implements DiscordAPI {
             }
         } catch (InterruptedException | ExecutionException e) {
             logger.warn("Something went wrong while connecting. Please contact the developer!", e);
+            throw new IllegalStateException("Could not figure out if ready or not. Please contact the developer!");
         }
     }
 
@@ -1006,12 +1006,13 @@ public class ImplDiscordAPI implements DiscordAPI {
         try {
             logger.debug("Trying to request token (email: {}, password: {})", email, password.replaceAll(".", "*"));
             HttpResponse<JsonNode> response = Unirest.post("https://discordapp.com/api/auth/login")
-                    .field("email", email)
-                    .field("password", password)
+                    .header("User-Agent", Javacord.USER_AGENT)
+                    .header("Content-Type", "application/json")
+                    .body(new JSONObject().put("email", email).put("password", password).toString())
                     .asJson();
             JSONObject jsonResponse = response.getBody().getObject();
             if (response.getStatus() == 400) {
-                throw new IllegalArgumentException("400 Bad request! Maybe wrong email or password?");
+                throw new IllegalArgumentException("400 Bad request! Maybe wrong email or password? StatusText: " + response.getStatusText() + "; Body: " + response.getBody());
             }
             if (response.getStatus() < 200 || response.getStatus() > 299) {
                 throw new IllegalStateException("Received http status code " + response.getStatus()
