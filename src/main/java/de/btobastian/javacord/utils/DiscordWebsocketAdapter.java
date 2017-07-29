@@ -72,6 +72,8 @@ public class DiscordWebsocketAdapter extends WebSocketAdapter {
 
     private boolean heartbeatAckReceived = false;
 
+    private boolean reconnect = true;
+
     public DiscordWebsocketAdapter(ImplDiscordAPI api, String gateway) {
         this.api = api;
         this.gateway = gateway;
@@ -79,6 +81,14 @@ public class DiscordWebsocketAdapter extends WebSocketAdapter {
         registerHandlers();
 
         connect();
+    }
+
+    /**
+     * Disconnects from the websocket.
+     */
+    public void disconnect() {
+        reconnect = false;
+        websocket.sendClose(1000);
     }
 
     private void connect() {
@@ -131,13 +141,16 @@ public class DiscordWebsocketAdapter extends WebSocketAdapter {
             ready.set(false);
             return;
         }
+
         // Reconnect
         if (heartbeatTimer != null) {
             heartbeatTimer.cancel();
             heartbeatTimer = null;
         }
 
-        connect();
+        if (reconnect) {
+            connect();
+        }
     }
 
     @Override
@@ -170,16 +183,16 @@ public class DiscordWebsocketAdapter extends WebSocketAdapter {
                     sessionId = packet.getJSONObject("d").getString("session_id");
                     if (api.isWaitingForServersOnStartup()) {
                         // Discord sends us GUILD_CREATE packets after logging in. We will wait for them.
-                        api.getThreadPool().getExecutorService().submit(new Runnable() {
+                        api.getThreadPool().getSingleThreadExecutorService("startupWait").submit(new Runnable() {
                             @Override
                             public void run() {
                                 int amount = api.getServers().size();
                                 for (;;) {
                                     try {
-                                        Thread.sleep(2000);
+                                        Thread.sleep(1500);
                                     } catch (InterruptedException ignored) { }
                                     if (api.getServers().size() <= amount) {
-                                        break; // two seconds without new servers becoming available
+                                        break; // 1.5 without new servers becoming available
                                     }
                                     amount = api.getServers().size();
                                 }

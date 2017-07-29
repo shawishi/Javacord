@@ -30,6 +30,7 @@ import de.btobastian.javacord.Javacord;
 import de.btobastian.javacord.entities.Server;
 import de.btobastian.javacord.entities.User;
 import de.btobastian.javacord.entities.UserStatus;
+import de.btobastian.javacord.entities.VoiceChannel;
 import de.btobastian.javacord.entities.message.Message;
 import de.btobastian.javacord.entities.message.MessageHistory;
 import de.btobastian.javacord.entities.message.MessageReceiver;
@@ -38,6 +39,7 @@ import de.btobastian.javacord.entities.message.impl.ImplMessage;
 import de.btobastian.javacord.entities.message.impl.ImplMessageHistory;
 import de.btobastian.javacord.entities.permissions.Role;
 import de.btobastian.javacord.utils.LoggerUtil;
+import de.btobastian.javacord.utils.SnowflakeUtil;
 import de.btobastian.javacord.utils.ratelimits.RateLimitType;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -74,6 +76,7 @@ public class ImplUser implements User {
     private final String discriminator;
     private final boolean bot;
     private UserStatus status = UserStatus.OFFLINE;
+    private VoiceChannel voiceChannel = null;
 
     /**
      * Creates a new instance of this class.
@@ -104,6 +107,11 @@ public class ImplUser implements User {
     @Override
     public String getId() {
         return id;
+    }
+
+    @Override
+    public Calendar getCreationDate() {
+        return SnowflakeUtil.parseDate(id);
     }
 
     @Override
@@ -643,6 +651,20 @@ public class ImplUser implements User {
      */
     public void setAvatarId(String avatarId) {
         this.avatarId = avatarId;
+    }
+    
+    /**
+     * Sets the {@link VoiceChannel} the user is currently in (null for none).
+     *
+     * @param voiceChannel The voice channel the user is in.
+     */
+    public void setVoiceChannel(VoiceChannel voiceChannel) {
+        this.voiceChannel = voiceChannel;
+    }
+    
+    @Override
+    public final VoiceChannel getVoiceChannel() {
+        return this.voiceChannel;
     }
 
     @Override

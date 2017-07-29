@@ -18,14 +18,37 @@
  */
 package de.btobastian.javacord.entities.impl;
 
+import java.awt.image.BufferedImage;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Future;
+
+import de.btobastian.javacord.utils.SnowflakeUtil;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
+
 import de.btobastian.javacord.ImplDiscordAPI;
-import de.btobastian.javacord.entities.*;
+import de.btobastian.javacord.entities.Channel;
+import de.btobastian.javacord.entities.CustomEmoji;
+import de.btobastian.javacord.entities.Invite;
+import de.btobastian.javacord.entities.Region;
+import de.btobastian.javacord.entities.Server;
+import de.btobastian.javacord.entities.User;
+import de.btobastian.javacord.entities.UserStatus;
+import de.btobastian.javacord.entities.VoiceChannel;
 import de.btobastian.javacord.entities.permissions.Ban;
 import de.btobastian.javacord.entities.permissions.Permissions;
 import de.btobastian.javacord.entities.permissions.Role;
@@ -34,23 +57,16 @@ import de.btobastian.javacord.entities.permissions.impl.ImplPermissions;
 import de.btobastian.javacord.entities.permissions.impl.ImplRole;
 import de.btobastian.javacord.listener.channel.ChannelCreateListener;
 import de.btobastian.javacord.listener.role.RoleCreateListener;
-import de.btobastian.javacord.listener.server.*;
+import de.btobastian.javacord.listener.server.ServerChangeNameListener;
+import de.btobastian.javacord.listener.server.ServerLeaveListener;
+import de.btobastian.javacord.listener.server.ServerMemberBanListener;
+import de.btobastian.javacord.listener.server.ServerMemberRemoveListener;
+import de.btobastian.javacord.listener.server.ServerMemberUnbanListener;
 import de.btobastian.javacord.listener.user.UserRoleAddListener;
 import de.btobastian.javacord.listener.user.UserRoleRemoveListener;
 import de.btobastian.javacord.listener.voicechannel.VoiceChannelCreateListener;
 import de.btobastian.javacord.utils.LoggerUtil;
 import de.btobastian.javacord.utils.ratelimits.RateLimitType;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.slf4j.Logger;
-
-import java.awt.image.BufferedImage;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Future;
 
 /**
  * The implementation of the server interface.
@@ -137,6 +153,30 @@ public class ImplServer implements Server {
             }
         }
 
+        JSONArray voiceStates = new JSONArray();
+        if (data.has("voice_states")) {
+            voiceStates = data.getJSONArray("voice_states");
+        }
+        for (int i = 0; i < voiceStates.length(); ++i) {
+            JSONObject voiceState = voiceStates.getJSONObject(i);
+            ImplUser user = null;
+            try {
+                user = (ImplUser) this.members.get(voiceState.getString("user_id"));
+            } catch (JSONException | NullPointerException e) {
+                continue;
+            }
+            VoiceChannel channel = null;
+            try {
+                channel = this.voiceChannels.get(voiceState.getString("channel_id"));
+            } catch (JSONException | NullPointerException e) {
+                continue;
+            }
+            if (channel != null) {
+                ((ImplVoiceChannel) channel).addConnectedUser(user);
+                user.setVoiceChannel(channel);
+            }
+        }
+
         JSONArray presences = new JSONArray();
         if (data.has("presences")) {
             presences = data.getJSONArray("presences");
@@ -161,6 +201,11 @@ public class ImplServer implements Server {
     @Override
     public String getId() {
         return id;
+    }
+
+    @Override
+    public Calendar getCreationDate() {
+        return SnowflakeUtil.parseDate(id);
     }
 
     @Override
@@ -839,8 +884,12 @@ public class ImplServer implements Server {
             @Override
             public Void call() throws Exception {
                 logger.debug("Trying to update nickname of user {} to {}", user, nickname);
+                String url = "https://discordapp.com/api/guilds/" + getId() + "/members/" + user.getId();
+                if (user.isYourself()) {
+                    url = "https://discordapp.com/api/guilds/" + getId() + "/members/@me/nick";
+                }
                 HttpResponse<JsonNode> response = Unirest
-                        .patch("https://discordapp.com/api/guilds/" + getId() + "/members/" + user.getId())
+                        .patch(url)
                         .header("authorization", api.getToken())
                         .header("Content-Type", "application/json")
                         .body(new JSONObject()
@@ -889,6 +938,15 @@ public class ImplServer implements Server {
      */
     public void removeMember(User user) {
         members.remove(user.getId());
+        for (Role role : getRoles()) {
+            ((ImplRole) role).removeUserNoUpdate(user);
+        }
+        for (Channel channel : getChannels()) {
+            ((ImplChannel) channel).removeOverwrittenPermissions(user);
+        }
+        for (VoiceChannel channel : getVoiceChannels()) {
+            ((ImplVoiceChannel) channel).removeOverwrittenPermissions(user);
+        }
     }
 
     /**

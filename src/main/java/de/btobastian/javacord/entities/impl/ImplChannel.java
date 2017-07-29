@@ -43,9 +43,11 @@ import de.btobastian.javacord.entities.permissions.Role;
 import de.btobastian.javacord.entities.permissions.impl.ImplPermissions;
 import de.btobastian.javacord.entities.permissions.impl.ImplRole;
 import de.btobastian.javacord.listener.channel.ChannelChangeNameListener;
+import de.btobastian.javacord.listener.channel.ChannelChangePositionListener;
 import de.btobastian.javacord.listener.channel.ChannelChangeTopicListener;
 import de.btobastian.javacord.listener.channel.ChannelDeleteListener;
 import de.btobastian.javacord.utils.LoggerUtil;
+import de.btobastian.javacord.utils.SnowflakeUtil;
 import de.btobastian.javacord.utils.ratelimits.RateLimitType;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -54,6 +56,7 @@ import org.slf4j.Logger;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
@@ -123,6 +126,11 @@ public class ImplChannel implements Channel {
     @Override
     public String getId() {
         return id;
+    }
+
+    @Override
+    public Calendar getCreationDate() {
+        return SnowflakeUtil.parseDate(id);
     }
 
     @Override
@@ -540,24 +548,30 @@ public class ImplChannel implements Channel {
 
     @Override
     public Future<Void> updateName(String newName) {
-        return update(newName, getTopic());
+        return update(newName, getTopic(), getPosition());
     }
 
     @Override
     public Future<Void> updateTopic(String newTopic) {
-        return update(getName(), newTopic);
+        return update(getName(), newTopic, getPosition());
     }
 
     @Override
-    public Future<Void> update(final String newName, final String newTopic) {
+    public Future<Void> updatePosition(int newPosition) {
+        return update(getName(), getTopic(), newPosition);
+    }
+
+    @Override
+    public Future<Void> update(final String newName, final String newTopic, final int newPosition) {
         final JSONObject params = new JSONObject()
                 .put("name", newName)
-                .put("topic", newTopic);
+                .put("topic", newTopic)
+                .put("position", newPosition);
         return api.getThreadPool().getExecutorService().submit(new Callable<Void>() {
             @Override
             public Void call() throws Exception {
-                logger.debug("Trying to update channel {} (new name: {}, old name: {}, new topic: {}, old topic: {})",
-                        ImplChannel.this, newName, getName(), newTopic, getTopic());
+                logger.debug("Trying to update channel {} (new name: {}, old name: {}, new topic: {}, old topic: {}, new position: {}, old position: {})",
+                        ImplChannel.this, newName, getName(), newTopic, getTopic(), newPosition, getPosition());
                 HttpResponse<JsonNode> response = Unirest
                         .patch("https://discordapp.com/api/channels/" + getId())
                         .header("authorization", api.getToken())
@@ -566,14 +580,15 @@ public class ImplChannel implements Channel {
                         .asJson();
                 api.checkResponse(response);
                 api.checkRateLimit(response, RateLimitType.UNKNOWN, server, null);
-                logger.info("Updated channel {} (new name: {}, old name: {}, new topic: {}, old topic: {})",
-                        ImplChannel.this, newName, getName(), newTopic, getTopic());
+                logger.info("Updated channel {} (new name: {}, old name: {}, new topic: {}, old topic: {}, new position: {}, old position: {})",
+                        ImplChannel.this, newName, getName(), newTopic, getTopic(), newPosition, getPosition());
                 String updatedName = response.getBody().getObject().getString("name");
                 String updatedTopic = null;
                 if (response.getBody().getObject().has("topic")
                         && !response.getBody().getObject().isNull("topic")) {
                     updatedTopic = response.getBody().getObject().getString("topic");
                 }
+                int updatedPosition = response.getBody().getObject().getInt("position");
 
                 // check name
                 if (!updatedName.equals(getName())) {
@@ -613,6 +628,28 @@ public class ImplChannel implements Channel {
                                         listener.onChannelChangeTopic(api, ImplChannel.this, oldTopic);
                                     } catch (Throwable t) {
                                         logger.warn("Uncaught exception in ChannelChangeTopicListener!", t);
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+
+                // check position
+                if (updatedPosition != getPosition()) {
+                    final int oldPosition = getPosition();
+                    setPosition(updatedPosition);
+                    api.getThreadPool().getSingleThreadExecutorService("listeners").submit(new Runnable() {
+                        @Override
+                        public void run() {
+                            List<ChannelChangePositionListener> listeners =
+                                    api.getListeners(ChannelChangePositionListener.class);
+                            synchronized (listeners) {
+                                for (ChannelChangePositionListener listener : listeners) {
+                                    try {
+                                        listener.onChannelChangePosition(api, ImplChannel.this, oldPosition);
+                                    } catch (Throwable t) {
+                                        logger.warn("Uncaught exception in ChannelChangePositionListener!", t);
                                     }
                                 }
                             }
@@ -722,6 +759,16 @@ public class ImplChannel implements Channel {
      */
     public void setOverwrittenPermissions(User user, Permissions permissions) {
         overwrittenPermissions.put(user.getId(), permissions);
+    }
+
+    /**
+     * Removes the overwritten permissions of a user from the cache.
+     *
+     *
+     * @param user The user, which permissions should be removed.
+     */
+    public void removeOverwrittenPermissions(User user) {
+        overwrittenPermissions.remove(user.getId());
     }
 
     @Override
