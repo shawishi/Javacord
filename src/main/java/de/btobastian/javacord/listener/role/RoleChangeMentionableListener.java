@@ -16,49 +16,25 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this program; if not, see <http://www.gnu.org/licenses/>.
  */
-package de.btobastian.javacord.entities;
+package de.btobastian.javacord.listener.role;
+
+import de.btobastian.javacord.DiscordAPI;
+import de.btobastian.javacord.entities.permissions.Role;
+import de.btobastian.javacord.listener.Listener;
 
 /**
- * An enum which contains all statuses.
+ * This listener listens to role Mentionable changes.
  */
-public enum UserStatus {
+public interface RoleChangeMentionableListener extends Listener {
 
     /**
-     * The user is online.
-     */
-    ONLINE(),
-
-    /**
-     * The user is idle.
-     */
-    IDLE(),
-    /**
-     * The user is dnd
-     */
-    DO_NOT_DISTURB(),
-    /**
-     * Ths user is offline.
-     */
-    OFFLINE();
-
-    /**
-     * Gets the status from the given String.
+     * This method is called every time a role changed its Mentionable.
      *
-     * @param str The string, e.g. "online".
-     *
-     * @return The status.
+     * @param api The api.
+     * @param role The role with the updated name.
+     * @param oldMentionable The old mentionable value of the role.
      */
-    public static UserStatus fromString(String str) {
-        switch (str) {
-            case "online":
-                return ONLINE;
-            case "idle":
-                return IDLE;
-            case"dnd":
-                return DO_NOT_DISTURB;
-            default:
-                return OFFLINE;
-        }
-    }
+    public void onRoleChangeMentionable(DiscordAPI api, Role role, boolean oldMentionable);
 
 }
+

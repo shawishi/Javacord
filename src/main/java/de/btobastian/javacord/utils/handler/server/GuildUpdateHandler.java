@@ -36,89 +36,129 @@ import java.util.List;
  */
 public class GuildUpdateHandler extends PacketHandler {
 
-    /**
-     * The logger of this class.
-     */
-    private static final Logger logger = LoggerUtil.getLogger(GuildUpdateHandler.class);
+	/**
+	 * The logger of this class.
+	 */
+	private static final Logger logger = LoggerUtil.getLogger(GuildUpdateHandler.class);
 
-    /**
-     * Creates a new instance of this class.
-     *
-     * @param api The api.
-     */
-    public GuildUpdateHandler(ImplDiscordAPI api) {
-        super(api, true, "GUILD_UPDATE");
-    }
+	/**
+	 * Creates a new instance of this class.
+	 *
+	 * @param api
+	 *            The api.
+	 */
+	public GuildUpdateHandler(ImplDiscordAPI api) {
+		super(api, true, "GUILD_UPDATE");
+	}
 
-    @Override
-    public void handle(JSONObject packet) {
-        if (packet.has("unavailable") && packet.getBoolean("unavailable")) {
-            return;
-        }
-        final ImplServer server = (ImplServer) api.getServerById(packet.getString("id"));
+	@Override
+	public void handle(JSONObject packet) {
+		if (packet.has("unavailable") && packet.getBoolean("unavailable")) {
+			return;
+		}
+		final ImplServer server = (ImplServer) api.getServerById(packet.getString("id"));
 
-        String name = packet.getString("name");
-        if (!server.getName().equals(name)) {
-            final String oldName = server.getName();
-            server.setName(name);
-            listenerExecutorService.submit(new Runnable() {
-                @Override
-                public void run() {
-                    List<ServerChangeNameListener> listeners = api.getListeners(ServerChangeNameListener.class);
-                    synchronized (listeners) {
-                        for (ServerChangeNameListener listener : listeners) {
-                            try {
-                                listener.onServerChangeName(api, server, oldName);
-                            } catch (Throwable t) {
-                                logger.warn("Uncaught exception in ServerChangeNameListener!", t);
-                            }
-                        }
-                    }
-                }
-            });
-        }
+		String name = packet.getString("name");
+		if (!server.getName().equals(name)) {
+			final String oldName = server.getName();
+			server.setName(name);
+			listenerExecutorService.submit(new Runnable() {
+				@Override
+				public void run() {
+					List<ServerChangeNameListener> listeners = api.getListeners(ServerChangeNameListener.class);
+					synchronized (listeners) {
+						for (ServerChangeNameListener listener : listeners) {
+							try {
+								listener.onServerChangeName(api, server, oldName);
+							} catch (Throwable t) {
+								logger.warn("Uncaught exception in ServerChangeNameListener!", t);
+							}
+						}
+					}
+				}
+			});
+		}
 
-        Region region = Region.getRegionByKey(packet.getString("region"));
-        if (server.getRegion() != region) {
-            final Region oldRegion = server.getRegion();
-            server.setRegion(region);
-            listenerExecutorService.submit(new Runnable() {
-                @Override
-                public void run() {
-                    List<ServerChangeRegionListener> listeners = api.getListeners(ServerChangeRegionListener.class);
-                    synchronized (listeners) {
-                        for (ServerChangeRegionListener listener : listeners) {
-                            try {
-                                listener.onServerChangeRegion(api, server, oldRegion);
-                            } catch (Throwable t) {
-                                logger.warn("Uncaught exception in ServerChangeRegionListener!", t);
-                            }
-                        }
-                    }
-                }
-            });
-        }
+		Region region = Region.getRegionByKey(packet.getString("region"));
+		if (server.getRegion() != region) {
+			final Region oldRegion = server.getRegion();
+			server.setRegion(region);
+			listenerExecutorService.submit(new Runnable() {
+				@Override
+				public void run() {
+					List<ServerChangeRegionListener> listeners = api.getListeners(ServerChangeRegionListener.class);
+					synchronized (listeners) {
+						for (ServerChangeRegionListener listener : listeners) {
+							try {
+								listener.onServerChangeRegion(api, server, oldRegion);
+							} catch (Throwable t) {
+								logger.warn("Uncaught exception in ServerChangeRegionListener!", t);
+							}
+						}
+					}
+				}
+			});
+		}
 
-        String ownerId = packet.getString("owner_id");
-        if (!server.getOwnerId().equals(ownerId)) {
-            final String oldOwnerId = server.getOwnerId();
-            server.setOwnerId(ownerId);
-            listenerExecutorService.submit(new Runnable() {
-                @Override
-                public void run() {
-                    List<ServerChangeOwnerListener> listeners = api.getListeners(ServerChangeOwnerListener.class);
-                    synchronized (listeners) {
-                        for (ServerChangeOwnerListener listener : listeners) {
-                            try {
-                                listener.onServerChangeOwner(api, server, oldOwnerId);
-                            } catch (Throwable t) {
-                                logger.warn("Uncaught exception in ServerChangeOwnerListener!", t);
-                            }
-                        }
-                    }
-                }
-            });
-        }
-    }
+		String ownerId = packet.getString("owner_id");
+		if (!server.getOwnerId().equals(ownerId)) {
+			final String oldOwnerId = server.getOwnerId();
+			server.setOwnerId(ownerId);
+			listenerExecutorService.submit(new Runnable() {
+				@Override
+				public void run() {
+					List<ServerChangeOwnerListener> listeners = api.getListeners(ServerChangeOwnerListener.class);
+					synchronized (listeners) {
+						for (ServerChangeOwnerListener listener : listeners) {
+							try {
+								listener.onServerChangeOwner(api, server, oldOwnerId);
+							} catch (Throwable t) {
+								logger.warn("Uncaught exception in ServerChangeOwnerListener!", t);
+							}
+						}
+					}
+				}
+			});
+		}
+
+//		String icon = packet.isNull("icon") ? null : packet.getString("icon");
+//		if (server.getIconHash() != null && !server.getIconHash().equals(icon)) {
+//			final String oldIcon = server.getIconHash();
+//			server.setIconHash(icon);
+//			listenerExecutorService.submit(new Runnable() {
+//				@Override
+//				public void run() {
+//					List<ServerChangeIconListener> listeners = api.getListeners(ServerChangeIconListener.class);
+//					synchronized (listeners) {
+//						for (ServerChangeIconListener listener : listeners) {
+//							try {
+//								listener.onServerChangeIcon(api, server, oldIcon);
+//							} catch (Throwable t) {
+//								logger.warn("Uncaught exception in ServerChangeIconListener!", t);
+//							}
+//						}
+//					}
+//				}
+//			});
+//		} else if (server.getIconHash() == null && server.getIconHash() != icon) {
+//			final String oldIcon = server.getIconHash();
+//			server.setIconHash(icon);
+//			listenerExecutorService.submit(new Runnable() {
+//				@Override
+//				public void run() {
+//					List<ServerChangeIconListener> listeners = api.getListeners(ServerChangeIconListener.class);
+//					synchronized (listeners) {
+//						for (ServerChangeIconListener listener : listeners) {
+//							try {
+//								listener.onServerChangeIcon(api, server, oldIcon);
+//							} catch (Throwable t) {
+//								logger.warn("Uncaught exception in ServerChangeIconListener!", t);
+//							}
+//						}
+//					}
+//				}
+//			});
+//		}
+	}
 
 }
