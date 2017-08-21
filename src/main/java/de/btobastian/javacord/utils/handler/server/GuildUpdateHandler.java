@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import de.btobastian.javacord.ImplDiscordAPI;
 import de.btobastian.javacord.entities.Region;
 import de.btobastian.javacord.entities.impl.ImplServer;
+import de.btobastian.javacord.listener.server.ServerChangeIconListener;
 import de.btobastian.javacord.listener.server.ServerChangeNameListener;
 import de.btobastian.javacord.listener.server.ServerChangeOwnerListener;
 import de.btobastian.javacord.listener.server.ServerChangeRegionListener;
@@ -122,44 +123,44 @@ public class GuildUpdateHandler extends PacketHandler {
 			});
 		}
 
-//		String icon = packet.isNull("icon") ? null : packet.getString("icon");
-//		if (server.getIconHash() != null && !server.getIconHash().equals(icon)) {
-//			final String oldIcon = server.getIconHash();
-//			server.setIconHash(icon);
-//			listenerExecutorService.submit(new Runnable() {
-//				@Override
-//				public void run() {
-//					List<ServerChangeIconListener> listeners = api.getListeners(ServerChangeIconListener.class);
-//					synchronized (listeners) {
-//						for (ServerChangeIconListener listener : listeners) {
-//							try {
-//								listener.onServerChangeIcon(api, server, oldIcon);
-//							} catch (Throwable t) {
-//								logger.warn("Uncaught exception in ServerChangeIconListener!", t);
-//							}
-//						}
-//					}
-//				}
-//			});
-//		} else if (server.getIconHash() == null && server.getIconHash() != icon) {
-//			final String oldIcon = server.getIconHash();
-//			server.setIconHash(icon);
-//			listenerExecutorService.submit(new Runnable() {
-//				@Override
-//				public void run() {
-//					List<ServerChangeIconListener> listeners = api.getListeners(ServerChangeIconListener.class);
-//					synchronized (listeners) {
-//						for (ServerChangeIconListener listener : listeners) {
-//							try {
-//								listener.onServerChangeIcon(api, server, oldIcon);
-//							} catch (Throwable t) {
-//								logger.warn("Uncaught exception in ServerChangeIconListener!", t);
-//							}
-//						}
-//					}
-//				}
-//			});
-//		}
+		String icon = packet.isNull("icon") ? null : packet.getString("icon");
+		if (server.getIconHash() != null && !server.getIconHash().equals(icon)) {
+			final String oldIcon = server.getIconHash();
+			server.setIconHash(icon);
+			listenerExecutorService.submit(new Runnable() {
+				@Override
+				public void run() {
+					List<ServerChangeIconListener> listeners = api.getListeners(ServerChangeIconListener.class);
+					synchronized (listeners) {
+						for (ServerChangeIconListener listener : listeners) {
+							try {
+								listener.onServerChangeIcon(api, server, oldIcon);
+							} catch (Throwable t) {
+								logger.warn("Uncaught exception in ServerChangeIconListener!", t);
+							}
+						}
+					}
+				}
+			});
+		} else if (server.getIconHash() == null && server.getIconHash() != icon) {
+			final String oldIcon = server.getIconHash();
+			server.setIconHash(icon);
+			listenerExecutorService.submit(new Runnable() {
+				@Override
+				public void run() {
+					List<ServerChangeIconListener> listeners = api.getListeners(ServerChangeIconListener.class);
+					synchronized (listeners) {
+						for (ServerChangeIconListener listener : listeners) {
+							try {
+								listener.onServerChangeIcon(api, server, oldIcon);
+							} catch (Throwable t) {
+								logger.warn("Uncaught exception in ServerChangeIconListener!", t);
+							}
+						}
+					}
+				}
+			});
+		}
 	}
 
 }

@@ -1137,6 +1137,25 @@ public class ImplServer implements Server {
 	}
 
 	/**
+	 * Gets the icon hash of the server.
+	 *
+	 * @return The icon hash of the server.
+	 */
+	public String getIconHash() {
+		return this.iconHash;
+	}
+
+	/**
+	 * Sets the icon hash of the server.
+	 *
+	 * @param hash
+	 *            The hash to use.
+	 */
+	public void setIconHash(String hash) {
+		this.iconHash = hash;
+	}
+
+	/**
 	 * Creates a new channel.
 	 *
 	 * @param name
