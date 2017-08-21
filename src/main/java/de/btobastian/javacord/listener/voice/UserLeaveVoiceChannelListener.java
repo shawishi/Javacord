@@ -34,6 +34,6 @@ public interface UserLeaveVoiceChannelListener extends Listener {
      * @param api The api.
      * @param user The user. May be <code>null</code>.
      */
-    public void onUserLeaveVoiceChannel(DiscordAPI api, User user);
+    public void onUserLeaveVoiceChannel(DiscordAPI api, User user, VoiceChannel oldChannel);
 
 }

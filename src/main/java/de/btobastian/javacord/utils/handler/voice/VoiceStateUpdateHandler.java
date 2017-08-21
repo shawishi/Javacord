@@ -27,6 +27,7 @@ import org.slf4j.Logger;
 
 import de.btobastian.javacord.ImplDiscordAPI;
 import de.btobastian.javacord.entities.User;
+import de.btobastian.javacord.entities.VoiceChannel;
 import de.btobastian.javacord.entities.impl.ImplUser;
 import de.btobastian.javacord.entities.impl.ImplVoiceChannel;
 import de.btobastian.javacord.listener.voice.UserJoinVoiceChannelListener;
@@ -74,6 +75,7 @@ public class VoiceStateUpdateHandler extends PacketHandler {
                     return;
                 }
                 ((ImplVoiceChannel) user.getVoiceChannel()).removeConnectedUser(user);
+                triggerUserLeaveVoiceChannelListeners(user);
             }
             final ImplVoiceChannel channel = (ImplVoiceChannel) api.getVoiceChannelById(channelId);
             channel.addConnectedUser(user);
@@ -97,24 +99,30 @@ public class VoiceStateUpdateHandler extends PacketHandler {
             if (user.getVoiceChannel() != null) {
                 ((ImplVoiceChannel) user.getVoiceChannel()).removeConnectedUser(user);
             }
-            user.setVoiceChannel(null);
-            listenerExecutorService.submit(new Runnable() {
-                @Override
-                public void run() {
-                    List<UserLeaveVoiceChannelListener> listeners = api
-                            .getListeners(UserLeaveVoiceChannelListener.class);
-                    synchronized (listeners) {
-                        for (UserLeaveVoiceChannelListener listener : listeners) {
-                            try {
-                                listener.onUserLeaveVoiceChannel(api, userPassed);
-                            } catch (Throwable t) {
-                                logger.warn("Uncaught exception in UserLeaveVoiceChannelListener!", t);
-                            }
+            triggerUserLeaveVoiceChannelListeners(user);
+        }
+    }
+    
+    public void triggerUserLeaveVoiceChannelListeners(ImplUser user) {
+    	final VoiceChannel oldChannel = user.getVoiceChannel();
+    	user.setVoiceChannel(null);
+    	final User finalUser = user;
+        listenerExecutorService.submit(new Runnable() {
+            @Override
+            public void run() {
+                List<UserLeaveVoiceChannelListener> listeners = api
+                        .getListeners(UserLeaveVoiceChannelListener.class);
+                synchronized (listeners) {
+                    for (UserLeaveVoiceChannelListener listener : listeners) {
+                        try {
+                            listener.onUserLeaveVoiceChannel(api, finalUser, oldChannel);
+                        } catch (Throwable t) {
+                            logger.warn("Uncaught exception in UserLeaveVoiceChannelListener!", t);
                         }
                     }
                 }
-            });
-        }
+            }
+        });
     }
 
 }
