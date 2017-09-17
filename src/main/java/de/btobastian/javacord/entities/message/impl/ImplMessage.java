@@ -471,7 +471,7 @@ public class ImplMessage implements Message {
 				}
 				final String oldContent = getContent();
 				setContent(content);
-				if (!oldContent.equals(content)) {
+				if (embed != null || !oldContent.equals(content)) {
 					api.getThreadPool().getSingleThreadExecutorService("listeners").submit(new Runnable() {
 						@Override
 						public void run() {
