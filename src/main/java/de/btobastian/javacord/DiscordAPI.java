@@ -152,7 +152,7 @@ public interface DiscordAPI {
      * @param id The id of the user.
      * @return The user with the given id. <code>Null</code> if no user with the id was found.
      */
-    public Future<User> getUserById(String id);
+	Future<User> getUserById(String id, final boolean addToCache);
 
     /**
      * Gets an user by its id. Unlike {@link #getUserById(String)} this method only search for the user in the cache.

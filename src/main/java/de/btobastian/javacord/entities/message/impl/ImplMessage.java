@@ -179,7 +179,7 @@ public class ImplMessage implements Message {
 			String userId = mentions.getJSONObject(i).getString("id");
 			User user;
 			try {
-				user = api.getUserById(userId).get();
+				user = api.getUserById(userId, true).get();
 			} catch (InterruptedException | ExecutionException e) {
 				continue;
 			}
