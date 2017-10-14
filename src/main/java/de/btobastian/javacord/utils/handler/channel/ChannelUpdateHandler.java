@@ -165,7 +165,7 @@ public class ChannelUpdateHandler extends PacketHandler {
             if (type.equals("member")) {
                 final User user;
                 try {
-                    user = api.getUserById(id).get();
+                    user = api.getUserById(id, true).get();
                 } catch (InterruptedException | ExecutionException e) {
                     continue;
                 }
@@ -291,7 +291,7 @@ public class ChannelUpdateHandler extends PacketHandler {
             if (type.equals("member")) {
                 final User user;
                 try {
-                    user = api.getUserById(id).get();
+                    user = api.getUserById(id, true).get();
                 } catch (InterruptedException | ExecutionException e) {
                     continue;
                 }

@@ -544,7 +544,7 @@ public class ImplServer implements Server {
 						.header("authorization", api.getToken()).asJson();
 				api.checkResponse(response);
 				api.checkRateLimit(response, RateLimitType.UNKNOWN, ImplServer.this, null);
-				final User user = api.getUserById(userId).get();
+				final User user = api.getUserById(userId, true).get();
 				if (user != null) {
 					removeMember(user);
 				}
@@ -650,7 +650,7 @@ public class ImplServer implements Server {
 						.header("authorization", api.getToken()).asJson();
 				api.checkResponse(response);
 				api.checkRateLimit(response, RateLimitType.UNKNOWN, ImplServer.this, null);
-				final User user = api.getUserById(userId).get();
+				final User user = api.getUserById(userId, true).get();
 				if (user != null) {
 					removeMember(user);
 				}
@@ -806,7 +806,7 @@ public class ImplServer implements Server {
 
 	@Override
 	public Future<User> getOwner() {
-		return api.getUserById(ownerId);
+		return api.getUserById(ownerId, true);
 	}
 
 	@Override

@@ -59,7 +59,7 @@ public class VoiceStateUpdateHandler extends PacketHandler {
     public void handle(JSONObject packet) {
         ImplUser user = null;
         try {
-            user = (ImplUser) api.getUserById(packet.getString("user_id")).get();
+            user = (ImplUser) api.getUserById(packet.getString("user_id"), true).get();
         } catch (JSONException | InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }

@@ -67,7 +67,7 @@ public class TypingStartHandler extends PacketHandler {
         String userId = packet.getString("user_id");
         final User user;
         try {
-            user = api.getUserById(userId).get();
+            user = api.getUserById(userId, true).get();
         } catch (InterruptedException | ExecutionException e) {
             return;
         }
