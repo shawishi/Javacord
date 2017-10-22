@@ -29,13 +29,16 @@ import java.awt.*;
  */
 public interface RoleChangeColorListener extends Listener {
 
-    /**
-     * This method is called every time a role changed its color.
-     *
-     * @param api The api.
-     * @param role The role with the updated name.
-     * @param oldColor The old color of the role.
-     */
-    public void onRoleChangeColor(DiscordAPI api, Role role, Color oldColor);
+	/**
+	 * This method is called every time a role changed its color.
+	 *
+	 * @param api
+	 *            The api.
+	 * @param role
+	 *            The role with the updated name.
+	 * @param oldColor
+	 *            The old color of the role.
+	 */
+	public void onRoleChangeColor(DiscordAPI api, Role role, Color oldColor);
 
 }

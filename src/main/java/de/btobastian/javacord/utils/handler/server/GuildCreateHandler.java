@@ -34,59 +34,60 @@ import java.util.List;
  */
 public class GuildCreateHandler extends PacketHandler {
 
-    /**
-     * The logger of this class.
-     */
-    private static final Logger logger = LoggerUtil.getLogger(GuildCreateHandler.class);
+	/**
+	 * The logger of this class.
+	 */
+	private static final Logger logger = LoggerUtil.getLogger(GuildCreateHandler.class);
 
-    /**
-     * Creates a new instance of this class.
-     *
-     * @param api The api.
-     */
-    public GuildCreateHandler(ImplDiscordAPI api) {
-        super(api, true, "GUILD_CREATE");
-    }
+	/**
+	 * Creates a new instance of this class.
+	 *
+	 * @param api
+	 *            The api.
+	 */
+	public GuildCreateHandler(ImplDiscordAPI api) {
+		super(api, true, "GUILD_CREATE");
+	}
 
-    @Override
-    public void handle(JSONObject packet) {
-        if (packet.has("unavailable") && packet.getBoolean("unavailable")) {
-            return;
-        }
-        String id = packet.getString("id");
-        if (api.getUnavailableServers().contains(id)) {
-            api.getUnavailableServers().remove(id);
-            new ImplServer(packet, api);
-            return;
-        }
-        if (api.getServerById(id) != null) {
-            // TODO update information
-            return;
-        }
-        final Server server = new ImplServer(packet, api);
-        listenerExecutorService.submit(new Runnable() {
-            @Override
-            public void run() {
-                List<ServerJoinListener> listeners = api.getListeners(ServerJoinListener.class);
-                synchronized (listeners) {
-                    for (ServerJoinListener listener : listeners) {
-                        try {
-                            listener.onServerJoin(api, server);
-                        } catch (Throwable t) {
-                            logger.warn("Uncaught exception in ServerJoinListener!", t);
-                        }
-                    }
-                }
-            }
-        });
-        api.getThreadPool().getExecutorService().submit(new Runnable() {
-            @Override
-            public void run() {
-                // can cause a deadlock if someone blocks a listener
-                // with the #createServer or #acceptInvite method + #get
-                api.getInternalServerJoinListener().onServerJoin(api, server);
-            }
-        });
-    }
+	@Override
+	public void handle(JSONObject packet) {
+		if (packet.has("unavailable") && packet.getBoolean("unavailable")) {
+			return;
+		}
+		String id = packet.getString("id");
+		if (api.getUnavailableServers().contains(id)) {
+			api.getUnavailableServers().remove(id);
+			new ImplServer(packet, api);
+			return;
+		}
+		if (api.getServerById(id) != null) {
+			// TODO update information
+			return;
+		}
+		final Server server = new ImplServer(packet, api);
+		listenerExecutorService.submit(new Runnable() {
+			@Override
+			public void run() {
+				List<ServerJoinListener> listeners = api.getListeners(ServerJoinListener.class);
+				synchronized (listeners) {
+					for (ServerJoinListener listener : listeners) {
+						try {
+							listener.onServerJoin(api, server);
+						} catch (Throwable t) {
+							logger.warn("Uncaught exception in ServerJoinListener!", t);
+						}
+					}
+				}
+			}
+		});
+		api.getThreadPool().getExecutorService().submit(new Runnable() {
+			@Override
+			public void run() {
+				// can cause a deadlock if someone blocks a listener
+				// with the #createServer or #acceptInvite method + #get
+				api.getInternalServerJoinListener().onServerJoin(api, server);
+			}
+		});
+	}
 
 }

@@ -26,33 +26,34 @@ import org.json.JSONObject;
  */
 public class ImplEmbedField implements EmbedField {
 
-    private String name;
-    private String value;
-    private boolean inline;
+	private String name;
+	private String value;
+	private boolean inline;
 
-    /**
-     * Creates a new instance of this class.
-     *
-     * @param data A JSONObject containing all necessary data.
-     */
-    public ImplEmbedField(JSONObject data) {
-        name = data.has("name") ? data.getString("name") : null;
-        value = data.has("value") ? data.getString("value") : null;
-        inline = data.has("inline") && data.getBoolean("inline");
-    }
+	/**
+	 * Creates a new instance of this class.
+	 *
+	 * @param data
+	 *            A JSONObject containing all necessary data.
+	 */
+	public ImplEmbedField(JSONObject data) {
+		name = data.has("name") ? data.getString("name") : null;
+		value = data.has("value") ? data.getString("value") : null;
+		inline = data.has("inline") && data.getBoolean("inline");
+	}
 
-    @Override
-    public String getName() {
-        return name;
-    }
+	@Override
+	public String getName() {
+		return name;
+	}
 
-    @Override
-    public String getValue() {
-        return value;
-    }
+	@Override
+	public String getValue() {
+		return value;
+	}
 
-    @Override
-    public boolean isInline() {
-        return inline;
-    }
+	@Override
+	public boolean isInline() {
+		return inline;
+	}
 }

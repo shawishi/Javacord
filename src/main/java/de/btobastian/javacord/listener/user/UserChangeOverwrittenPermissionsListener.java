@@ -30,26 +30,36 @@ import de.btobastian.javacord.listener.Listener;
  */
 public interface UserChangeOverwrittenPermissionsListener extends Listener {
 
-    /**
-     * This method is called every time a user changed its overwritten permissions.
-     *
-     * @param api The api.
-     * @param user The user with the updated permissions.
-     * @param channel The channel with the updated permissions.
-     * @param oldPermissions The old permissions of the user.
-     */
-    public void onUserChangeOverwrittenPermissions(
-            DiscordAPI api, User user, Channel channel, Permissions oldPermissions);
+	/**
+	 * This method is called every time a user changed its overwritten
+	 * permissions.
+	 *
+	 * @param api
+	 *            The api.
+	 * @param user
+	 *            The user with the updated permissions.
+	 * @param channel
+	 *            The channel with the updated permissions.
+	 * @param oldPermissions
+	 *            The old permissions of the user.
+	 */
+	public void onUserChangeOverwrittenPermissions(DiscordAPI api, User user, Channel channel,
+			Permissions oldPermissions);
 
-    /**
-     * This method is called every time a user changed its overwritten permissions.
-     *
-     * @param api The api.
-     * @param user The user with the updated permissions.
-     * @param channel The voice channel with the updated permissions.
-     * @param oldPermissions The old permissions of the user.
-     */
-    public void onUserChangeOverwrittenPermissions(
-            DiscordAPI api, User user, VoiceChannel channel, Permissions oldPermissions);
+	/**
+	 * This method is called every time a user changed its overwritten
+	 * permissions.
+	 *
+	 * @param api
+	 *            The api.
+	 * @param user
+	 *            The user with the updated permissions.
+	 * @param channel
+	 *            The voice channel with the updated permissions.
+	 * @param oldPermissions
+	 *            The old permissions of the user.
+	 */
+	public void onUserChangeOverwrittenPermissions(DiscordAPI api, User user, VoiceChannel channel,
+			Permissions oldPermissions);
 
 }

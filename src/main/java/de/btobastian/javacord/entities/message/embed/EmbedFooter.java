@@ -25,25 +25,25 @@ import java.net.URL;
  */
 public interface EmbedFooter {
 
-    /**
-     * Gets the footer text.
-     *
-     * @return The text of the footer.
-     */
-    public String getText();
+	/**
+	 * Gets the footer text.
+	 *
+	 * @return The text of the footer.
+	 */
+	public String getText();
 
-    /**
-     * Gets the url of the footer icon.
-     *
-     * @return The url of the footer icon.
-     */
-    public URL getIconUrl();
+	/**
+	 * Gets the url of the footer icon.
+	 *
+	 * @return The url of the footer icon.
+	 */
+	public URL getIconUrl();
 
-    /**
-     * Gets the proxy url of the footer icon.
-     *
-     * @return The proxy url of the footer icon.
-     */
-    public URL getProxyIconUrl();
+	/**
+	 * Gets the proxy url of the footer icon.
+	 *
+	 * @return The proxy url of the footer icon.
+	 */
+	public URL getProxyIconUrl();
 
 }

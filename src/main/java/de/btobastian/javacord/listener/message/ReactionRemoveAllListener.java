@@ -19,7 +19,6 @@
 package de.btobastian.javacord.listener.message;
 
 import de.btobastian.javacord.DiscordAPI;
-import de.btobastian.javacord.entities.User;
 import de.btobastian.javacord.entities.message.Message;
 import de.btobastian.javacord.entities.message.Reaction;
 import de.btobastian.javacord.listener.Listener;
@@ -31,13 +30,16 @@ import java.util.List;
  */
 public interface ReactionRemoveAllListener extends Listener {
 
-    /**
-     * This method is called every time all reaction were removed.
-     *
-     * @param api The api.
-     * @param message The message of the removed reactions.
-     * @param reactions The old reactions of the message.
-     */
-    public void onReactionRemoveAll(DiscordAPI api, Message message, List<Reaction> reactions);
+	/**
+	 * This method is called every time all reaction were removed.
+	 *
+	 * @param api
+	 *            The api.
+	 * @param message
+	 *            The message of the removed reactions.
+	 * @param reactions
+	 *            The old reactions of the message.
+	 */
+	public void onReactionRemoveAll(DiscordAPI api, Message message, List<Reaction> reactions);
 
 }

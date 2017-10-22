@@ -28,56 +28,58 @@ import de.btobastian.javacord.entities.permissions.PermissionsBuilder;
  */
 public class ImplPermissionsBuilder implements PermissionsBuilder {
 
-    private int allowed = 0;
-    private int denied = 0;
+	private int allowed = 0;
+	private int denied = 0;
 
-    /**
-     * Creates a new instance of this class.
-     */
-    public ImplPermissionsBuilder() { }
+	/**
+	 * Creates a new instance of this class.
+	 */
+	public ImplPermissionsBuilder() {
+	}
 
-    /**
-     * Creates a new instance of this class.
-     *
-     * @param permissions The permissions which should be copied.
-     */
-    public ImplPermissionsBuilder(Permissions permissions) {
-        allowed = ((ImplPermissions) permissions).getAllowed();
-        denied = ((ImplPermissions) permissions).getDenied();
-    }
+	/**
+	 * Creates a new instance of this class.
+	 *
+	 * @param permissions
+	 *            The permissions which should be copied.
+	 */
+	public ImplPermissionsBuilder(Permissions permissions) {
+		allowed = ((ImplPermissions) permissions).getAllowed();
+		denied = ((ImplPermissions) permissions).getDenied();
+	}
 
-    @Override
-    public PermissionsBuilder setState(PermissionType type, PermissionState state) {
-        switch (state) {
-            case ALLOWED:
-                allowed = type.set(allowed, true);
-                denied = type.set(denied, false);
-                break;
-            case DENIED:
-                allowed = type.set(allowed, false);
-                denied = type.set(denied, true);
-                break;
-            case NONE:
-                allowed = type.set(allowed, false);
-                denied = type.set(denied, false);
-                break;
-        }
-        return this;
-    }
+	@Override
+	public PermissionsBuilder setState(PermissionType type, PermissionState state) {
+		switch (state) {
+		case ALLOWED:
+			allowed = type.set(allowed, true);
+			denied = type.set(denied, false);
+			break;
+		case DENIED:
+			allowed = type.set(allowed, false);
+			denied = type.set(denied, true);
+			break;
+		case NONE:
+			allowed = type.set(allowed, false);
+			denied = type.set(denied, false);
+			break;
+		}
+		return this;
+	}
 
-    @Override
-    public PermissionState getState(PermissionType type) {
-        if (type.isSet(allowed)) {
-            return PermissionState.ALLOWED;
-        }
-        if (type.isSet(denied)) {
-            return PermissionState.DENIED;
-        }
-        return PermissionState.NONE;
-    }
+	@Override
+	public PermissionState getState(PermissionType type) {
+		if (type.isSet(allowed)) {
+			return PermissionState.ALLOWED;
+		}
+		if (type.isSet(denied)) {
+			return PermissionState.DENIED;
+		}
+		return PermissionState.NONE;
+	}
 
-    @Override
-    public Permissions build() {
-        return new ImplPermissions(allowed, denied);
-    }
+	@Override
+	public Permissions build() {
+		return new ImplPermissions(allowed, denied);
+	}
 }

@@ -37,55 +37,56 @@ import java.util.concurrent.ExecutionException;
  */
 public class TypingStartHandler extends PacketHandler {
 
-    /**
-     * The logger of this class.
-     */
-    private static final Logger logger = LoggerUtil.getLogger(TypingStartHandler.class);
+	/**
+	 * The logger of this class.
+	 */
+	private static final Logger logger = LoggerUtil.getLogger(TypingStartHandler.class);
 
-    /**
-     * Creates a new instance of this class.
-     *
-     * @param api The api.
-     */
-    public TypingStartHandler(ImplDiscordAPI api) {
-        super(api, true, "TYPING_START");
-    }
+	/**
+	 * Creates a new instance of this class.
+	 *
+	 * @param api
+	 *            The api.
+	 */
+	public TypingStartHandler(ImplDiscordAPI api) {
+		super(api, true, "TYPING_START");
+	}
 
-    @Override
-    public void handle(JSONObject packet) {
-        Channel channelTemp = null;
-        String channelId = packet.getString("channel_id");
-        Iterator<Server> serverIterator = api.getServers().iterator();
-        while (serverIterator.hasNext()) {
-            channelTemp = serverIterator.next().getChannelById(channelId);
-            if (channelTemp != null) {
-                break;
-            }
-        }
-        final Channel channel = channelTemp;
+	@Override
+	public void handle(JSONObject packet) {
+		Channel channelTemp = null;
+		String channelId = packet.getString("channel_id");
+		Iterator<Server> serverIterator = api.getServers().iterator();
+		while (serverIterator.hasNext()) {
+			channelTemp = serverIterator.next().getChannelById(channelId);
+			if (channelTemp != null) {
+				break;
+			}
+		}
+		final Channel channel = channelTemp;
 
-        String userId = packet.getString("user_id");
-        final User user;
-        try {
-            user = api.getUserById(userId, true).get();
-        } catch (InterruptedException | ExecutionException e) {
-            return;
-        }
-        listenerExecutorService.submit(new Runnable() {
-            @Override
-            public void run() {
-                List<TypingStartListener> listeners = api.getListeners(TypingStartListener.class);
-                synchronized (listeners) {
-                    for (TypingStartListener listener : listeners) {
-                        try {
-                            listener.onTypingStart(api, user, channel);
-                        } catch (Throwable t) {
-                            logger.warn("Uncaught exception in TypingStartListener!", t);
-                        }
-                    }
-                }
-            }
-        });
-    }
+		String userId = packet.getString("user_id");
+		final User user;
+		try {
+			user = api.getUserById(userId, true).get();
+		} catch (InterruptedException | ExecutionException e) {
+			return;
+		}
+		listenerExecutorService.submit(new Runnable() {
+			@Override
+			public void run() {
+				List<TypingStartListener> listeners = api.getListeners(TypingStartListener.class);
+				synchronized (listeners) {
+					for (TypingStartListener listener : listeners) {
+						try {
+							listener.onTypingStart(api, user, channel);
+						} catch (Throwable t) {
+							logger.warn("Uncaught exception in TypingStartListener!", t);
+						}
+					}
+				}
+			}
+		});
+	}
 
 }

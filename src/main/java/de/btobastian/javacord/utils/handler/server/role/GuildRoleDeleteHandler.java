@@ -35,49 +35,50 @@ import java.util.List;
  */
 public class GuildRoleDeleteHandler extends PacketHandler {
 
-    /**
-     * The logger of this class.
-     */
-    private static final Logger logger = LoggerUtil.getLogger(GuildRoleDeleteHandler.class);
+	/**
+	 * The logger of this class.
+	 */
+	private static final Logger logger = LoggerUtil.getLogger(GuildRoleDeleteHandler.class);
 
-    /**
-     * Creates a new instance of this class.
-     *
-     * @param api The api.
-     */
-    public GuildRoleDeleteHandler(ImplDiscordAPI api) {
-        super(api, true, "GUILD_ROLE_DELETE");
-    }
+	/**
+	 * Creates a new instance of this class.
+	 *
+	 * @param api
+	 *            The api.
+	 */
+	public GuildRoleDeleteHandler(ImplDiscordAPI api) {
+		super(api, true, "GUILD_ROLE_DELETE");
+	}
 
-    @Override
-    public void handle(JSONObject packet) {
-        String guildId = packet.getString("guild_id");
-        String roleId = packet.getString("role_id");
+	@Override
+	public void handle(JSONObject packet) {
+		String guildId = packet.getString("guild_id");
+		String roleId = packet.getString("role_id");
 
-        Server server = api.getServerById(guildId);
-        final Role role = server.getRoleById(roleId);
+		Server server = api.getServerById(guildId);
+		final Role role = server.getRoleById(roleId);
 
-        if (role == null) {
-            return;
-        }
+		if (role == null) {
+			return;
+		}
 
-        ((ImplServer) server).removeRole(role);
+		((ImplServer) server).removeRole(role);
 
-        listenerExecutorService.submit(new Runnable() {
-            @Override
-            public void run() {
-                List<RoleDeleteListener> listeners = api.getListeners(RoleDeleteListener.class);
-                synchronized (listeners) {
-                    for (RoleDeleteListener listener : listeners) {
-                        try {
-                            listener.onRoleDelete(api, role);
-                        } catch (Throwable t) {
-                            logger.warn("Uncaught exception in RoleDeleteListener!", t);
-                        }
-                    }
-                }
-            }
-        });
-    }
+		listenerExecutorService.submit(new Runnable() {
+			@Override
+			public void run() {
+				List<RoleDeleteListener> listeners = api.getListeners(RoleDeleteListener.class);
+				synchronized (listeners) {
+					for (RoleDeleteListener listener : listeners) {
+						try {
+							listener.onRoleDelete(api, role);
+						} catch (Throwable t) {
+							logger.warn("Uncaught exception in RoleDeleteListener!", t);
+						}
+					}
+				}
+			}
+		});
+	}
 
 }

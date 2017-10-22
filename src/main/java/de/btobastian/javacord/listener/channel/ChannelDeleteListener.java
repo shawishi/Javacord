@@ -27,12 +27,14 @@ import de.btobastian.javacord.listener.Listener;
  */
 public interface ChannelDeleteListener extends Listener {
 
-    /**
-     * This method is called every time a channel was deleted.
-     *
-     * @param api The api.
-     * @param channel The deleted channel.
-     */
-    public void onChannelDelete(DiscordAPI api, Channel channel);
+	/**
+	 * This method is called every time a channel was deleted.
+	 *
+	 * @param api
+	 *            The api.
+	 * @param channel
+	 *            The deleted channel.
+	 */
+	public void onChannelDelete(DiscordAPI api, Channel channel);
 
 }

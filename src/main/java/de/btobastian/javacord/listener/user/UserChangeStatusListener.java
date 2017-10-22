@@ -28,13 +28,16 @@ import de.btobastian.javacord.listener.Listener;
  */
 public interface UserChangeStatusListener extends Listener {
 
-    /**
-     * This method is called every time a user changed its status.
-     *
-     * @param api The api.
-     * @param user The user with the updated status.
-     * @param oldStatus The old status of the user.
-     */
-    public void onUserChangeStatus(DiscordAPI api, User user, UserStatus oldStatus);
+	/**
+	 * This method is called every time a user changed its status.
+	 *
+	 * @param api
+	 *            The api.
+	 * @param user
+	 *            The user with the updated status.
+	 * @param oldStatus
+	 *            The old status of the user.
+	 */
+	public void onUserChangeStatus(DiscordAPI api, User user, UserStatus oldStatus);
 
 }

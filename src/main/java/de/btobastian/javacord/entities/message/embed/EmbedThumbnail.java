@@ -25,32 +25,32 @@ import java.net.URL;
  */
 public interface EmbedThumbnail {
 
-    /**
-     * Gets the url of the thumbnail.
-     *
-     * @return The url of the thumbnail.
-     */
-    public URL getUrl();
+	/**
+	 * Gets the url of the thumbnail.
+	 *
+	 * @return The url of the thumbnail.
+	 */
+	public URL getUrl();
 
-    /**
-     * Gets the proxy url of the thumbnail.
-     *
-     * @return The proxy url of the thumbnail.
-     */
-    public URL getProxyUrl();
+	/**
+	 * Gets the proxy url of the thumbnail.
+	 *
+	 * @return The proxy url of the thumbnail.
+	 */
+	public URL getProxyUrl();
 
-    /**
-     * Gets the height of the thumbnail.
-     *
-     * @return The height of the thumbnail.
-     */
-    public int getHeight();
+	/**
+	 * Gets the height of the thumbnail.
+	 *
+	 * @return The height of the thumbnail.
+	 */
+	public int getHeight();
 
-    /**
-     * Gets the width of the thumbnail.
-     *
-     * @return The width of the thumbnail.
-     */
-    public int getWidth();
+	/**
+	 * Gets the width of the thumbnail.
+	 *
+	 * @return The width of the thumbnail.
+	 */
+	public int getWidth();
 
 }

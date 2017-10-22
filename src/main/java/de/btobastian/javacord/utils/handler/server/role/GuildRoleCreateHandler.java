@@ -36,43 +36,44 @@ import java.util.List;
  */
 public class GuildRoleCreateHandler extends PacketHandler {
 
-    /**
-     * The logger of this class.
-     */
-    private static final Logger logger = LoggerUtil.getLogger(GuildRoleCreateHandler.class);
+	/**
+	 * The logger of this class.
+	 */
+	private static final Logger logger = LoggerUtil.getLogger(GuildRoleCreateHandler.class);
 
-    /**
-     * Creates a new instance of this class.
-     *
-     * @param api The api.
-     */
-    public GuildRoleCreateHandler(ImplDiscordAPI api) {
-        super(api, true, "GUILD_ROLE_CREATE");
-    }
+	/**
+	 * Creates a new instance of this class.
+	 *
+	 * @param api
+	 *            The api.
+	 */
+	public GuildRoleCreateHandler(ImplDiscordAPI api) {
+		super(api, true, "GUILD_ROLE_CREATE");
+	}
 
-    @Override
-    public void handle(JSONObject packet) {
-        String guildId = packet.getString("guild_id");
-        JSONObject roleJson = packet.getJSONObject("role");
+	@Override
+	public void handle(JSONObject packet) {
+		String guildId = packet.getString("guild_id");
+		JSONObject roleJson = packet.getJSONObject("role");
 
-        Server server = api.getServerById(guildId);
-        final Role role = new ImplRole(roleJson, (ImplServer) server, api);
+		Server server = api.getServerById(guildId);
+		final Role role = new ImplRole(roleJson, (ImplServer) server, api);
 
-        listenerExecutorService.submit(new Runnable() {
-            @Override
-            public void run() {
-                List<RoleCreateListener> listeners = api.getListeners(RoleCreateListener.class);
-                synchronized (listeners) {
-                    for (RoleCreateListener listener : listeners) {
-                        try {
-                            listener.onRoleCreate(api, role);
-                        } catch (Throwable t) {
-                            logger.warn("Uncaught exception in RoleCreateListener!", t);
-                        }
-                    }
-                }
-            }
-        });
-    }
+		listenerExecutorService.submit(new Runnable() {
+			@Override
+			public void run() {
+				List<RoleCreateListener> listeners = api.getListeners(RoleCreateListener.class);
+				synchronized (listeners) {
+					for (RoleCreateListener listener : listeners) {
+						try {
+							listener.onRoleCreate(api, role);
+						} catch (Throwable t) {
+							logger.warn("Uncaught exception in RoleCreateListener!", t);
+						}
+					}
+				}
+			}
+		});
+	}
 
 }

@@ -33,153 +33,168 @@ import java.util.concurrent.Future;
  */
 public interface User extends MessageReceiver {
 
-    /**
-     * Gets the id of the user.
-     *
-     * @return The id of the user.
-     */
-    public String getId();
+	/**
+	 * Gets the id of the user.
+	 *
+	 * @return The id of the user.
+	 */
+	@Override
+	public String getId();
 
-    /**
-     * Gets the creation date of the user account.
-     *
-     * @return The creation date of the user account.
-     */
-    public Calendar getCreationDate();
+	/**
+	 * Gets the creation date of the user account.
+	 *
+	 * @return The creation date of the user account.
+	 */
+	public Calendar getCreationDate();
 
-    /**
-     * Gets the name of the user.
-     *
-     * @return The name of the user.
-     */
-    public String getName();
+	/**
+	 * Gets the name of the user.
+	 *
+	 * @return The name of the user.
+	 */
+	public String getName();
 
-    /**
-     * Gets the nickname of the user on the given server.
-     *
-     * @param server The server.
-     * @return The nickname of the user on the server or <code>null</code> if the user has no nick.
-     */
-    public String getNickname(Server server);
+	/**
+	 * Gets the nickname of the user on the given server.
+	 *
+	 * @param server
+	 *            The server.
+	 * @return The nickname of the user on the server or <code>null</code> if
+	 *         the user has no nick.
+	 */
+	public String getNickname(Server server);
 
-    /**
-     * Checks if the user has a nickname on the given server.
-     *
-     * @param server The server to check.
-     * @return Whether the user has a nickname on the server or not.
-     */
-    public boolean hasNickname(Server server);
+	/**
+	 * Checks if the user has a nickname on the given server.
+	 *
+	 * @param server
+	 *            The server to check.
+	 * @return Whether the user has a nickname on the server or not.
+	 */
+	public boolean hasNickname(Server server);
 
-    /**
-     * Updates the nickname of a user.
-     *
-     * @param server The server.
-     * @param nickname The nickname to set.
-     * @return A future which tells us whether the update was successful or not.
-     */
-    public Future<Void> updateNickname(Server server, String nickname);
+	/**
+	 * Updates the nickname of a user.
+	 *
+	 * @param server
+	 *            The server.
+	 * @param nickname
+	 *            The nickname to set.
+	 * @return A future which tells us whether the update was successful or not.
+	 */
+	public Future<Void> updateNickname(Server server, String nickname);
 
-    /**
-     * Checks if the user is the account you logged in.
-     *
-     * @return Whether the user is you or not.
-     */
-    public boolean isYourself();
+	/**
+	 * Checks if the user is the account you logged in.
+	 *
+	 * @return Whether the user is you or not.
+	 */
+	public boolean isYourself();
 
-    /**
-     * Gets the avatar of the user as byte array.
-     *
-     * @return The jpg-avatar of the user. The array is empty if the user has no avatar.
-     */
-    public Future<byte[]> getAvatarAsByteArray();
+	/**
+	 * Gets the avatar of the user as byte array.
+	 *
+	 * @return The jpg-avatar of the user. The array is empty if the user has no
+	 *         avatar.
+	 */
+	public Future<byte[]> getAvatarAsByteArray();
 
-    /**
-     * Gets the avatar of the user as byte array.
-     *
-     * @param callback The callback which will be informed when the avatar was downloaded.
-     *                 The array is the jpg-avatar of the user. The array is empty if the user has no avatar.
-     * @return The jpg-avatar of the user. The array is empty if the user has no avatar.
-     */
-    public Future<byte[]> getAvatarAsByteArray(FutureCallback<byte[]> callback);
+	/**
+	 * Gets the avatar of the user as byte array.
+	 *
+	 * @param callback
+	 *            The callback which will be informed when the avatar was
+	 *            downloaded. The array is the jpg-avatar of the user. The array
+	 *            is empty if the user has no avatar.
+	 * @return The jpg-avatar of the user. The array is empty if the user has no
+	 *         avatar.
+	 */
+	public Future<byte[]> getAvatarAsByteArray(FutureCallback<byte[]> callback);
 
-    /**
-     * Gets the avatar of the user.
-     *
-     * @return The jpg-avatar of the user. Canceled if the user has no avatar.
-     */
-    public Future<BufferedImage> getAvatar();
+	/**
+	 * Gets the avatar of the user.
+	 *
+	 * @return The jpg-avatar of the user. Canceled if the user has no avatar.
+	 */
+	public Future<BufferedImage> getAvatar();
 
-    /**
-     * Gets the avatar of the user.
-     *
-     * @param callback The callback which will be informed when the avatar was downloaded.
-     *                 The image will be <code>null</code> if the user has no avatar.
-     * @return The jpg-avatar of the user. Canceled if the user has no avatar.
-     */
-    public Future<BufferedImage> getAvatar(FutureCallback<BufferedImage> callback);
+	/**
+	 * Gets the avatar of the user.
+	 *
+	 * @param callback
+	 *            The callback which will be informed when the avatar was
+	 *            downloaded. The image will be <code>null</code> if the user
+	 *            has no avatar.
+	 * @return The jpg-avatar of the user. Canceled if the user has no avatar.
+	 */
+	public Future<BufferedImage> getAvatar(FutureCallback<BufferedImage> callback);
 
-    /**
-     * Gets the url of the users avatar.
-     *
-     * @return The url of the users avatar. <code>Null</code> if the user has no avatar.
-     */
-    public URL getAvatarUrl();
+	/**
+	 * Gets the url of the users avatar.
+	 *
+	 * @return The url of the users avatar. <code>Null</code> if the user has no
+	 *         avatar.
+	 */
+	public URL getAvatarUrl();
 
-    /**
-     * Gets the id of the users avatar.
-     *
-     * @return The id of the users avatar. <code>Null</code> if the user has no avatar.
-     */
-    public String getAvatarId();
+	/**
+	 * Gets the id of the users avatar.
+	 *
+	 * @return The id of the users avatar. <code>Null</code> if the user has no
+	 *         avatar.
+	 */
+	public String getAvatarId();
 
-    /**
-     * Gets the roles of the user on the given server.
-     *
-     * @param server The server.
-     * @return The roles of the user on the given server.
-     */
-    public Collection<Role> getRoles(Server server);
+	/**
+	 * Gets the roles of the user on the given server.
+	 *
+	 * @param server
+	 *            The server.
+	 * @return The roles of the user on the given server.
+	 */
+	public Collection<Role> getRoles(Server server);
 
-    /**
-     * Gets the game the user is currently playing.
-     *
-     * @return The game the user is currently playing. May be <code>null</code>.
-     */
-    public String getGame();
+	/**
+	 * Gets the game the user is currently playing.
+	 *
+	 * @return The game the user is currently playing. May be <code>null</code>.
+	 */
+	public String getGame();
 
-    /**
-     * Gets the tag which is used to mention the user.
-     *
-     * @return Gets the tag which is used to mention the user.
-     */
-    public String getMentionTag();
+	/**
+	 * Gets the tag which is used to mention the user.
+	 *
+	 * @return Gets the tag which is used to mention the user.
+	 */
+	public String getMentionTag();
 
-    /**
-     * Gets the discriminator of the user.
-     *
-     * @return The discriminator of the user.
-     */
-    public String getDiscriminator();
+	/**
+	 * Gets the discriminator of the user.
+	 *
+	 * @return The discriminator of the user.
+	 */
+	public String getDiscriminator();
 
-    /**
-     * Checks whether the user is a bot or not.
-     *
-     * @return Whether the user is a bot or not.
-     */
-    public boolean isBot();
+	/**
+	 * Checks whether the user is a bot or not.
+	 *
+	 * @return Whether the user is a bot or not.
+	 */
+	public boolean isBot();
 
-    /**
-     * Gets the status of the user.
-     *
-     * @return The status of the user.
-     */
-    public UserStatus getStatus();
-    
-    /**
-     * Gets the status of the user.
-     *
-     * @return The status of the user.
-     */
-    public VoiceChannel getVoiceChannel();
+	/**
+	 * Gets the status of the user.
+	 *
+	 * @return The status of the user.
+	 */
+	public UserStatus getStatus();
+
+	/**
+	 * Gets the status of the user.
+	 *
+	 * @return The status of the user.
+	 */
+	public VoiceChannel getVoiceChannel();
 
 }

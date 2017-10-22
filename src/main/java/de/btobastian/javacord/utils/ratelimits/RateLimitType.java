@@ -23,38 +23,38 @@ package de.btobastian.javacord.utils.ratelimits;
  */
 public enum RateLimitType {
 
-    /**
-     * Private messages were rate limited.
-     */
-    PRIVATE_MESSAGE(),
+	/**
+	 * Private messages were rate limited.
+	 */
+	PRIVATE_MESSAGE(),
 
-    /**
-     * Server messages were rate limited.
-     */
-    SERVER_MESSAGE(),
+	/**
+	 * Server messages were rate limited.
+	 */
+	SERVER_MESSAGE(),
 
-    /**
-     * Name changes were rate limited.
-     */
-    NAME_CHANGE(),
+	/**
+	 * Name changes were rate limited.
+	 */
+	NAME_CHANGE(),
 
-    /**
-     * Private message deletions were rate limited.
-     */
-    PRIVATE_MESSAGE_DELETE(),
+	/**
+	 * Private message deletions were rate limited.
+	 */
+	PRIVATE_MESSAGE_DELETE(),
 
-    /**
-     * Server message deletions were rate limited.
-     */
-    SERVER_MESSAGE_DELETE(),
+	/**
+	 * Server message deletions were rate limited.
+	 */
+	SERVER_MESSAGE_DELETE(),
 
-    /**
-     * An unknown rate limit.
-     */
-    UNKNOWN();
+	/**
+	 * An unknown rate limit.
+	 */
+	UNKNOWN();
 
-    private RateLimitType() {
+	private RateLimitType() {
 
-    }
+	}
 
 }

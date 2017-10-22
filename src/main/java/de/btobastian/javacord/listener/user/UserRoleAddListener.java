@@ -28,13 +28,16 @@ import de.btobastian.javacord.listener.Listener;
  */
 public interface UserRoleAddListener extends Listener {
 
-    /**
-     * This method is called every time a user was added to a role.
-     *
-     * @param api The api.
-     * @param user The user who was added to the role.
-     * @param role The role the user was added to.
-     */
-    public void onUserRoleAdd(DiscordAPI api, User user, Role role);
+	/**
+	 * This method is called every time a user was added to a role.
+	 *
+	 * @param api
+	 *            The api.
+	 * @param user
+	 *            The user who was added to the role.
+	 * @param role
+	 *            The role the user was added to.
+	 */
+	public void onUserRoleAdd(DiscordAPI api, User user, Role role);
 
 }

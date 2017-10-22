@@ -27,12 +27,14 @@ import de.btobastian.javacord.listener.Listener;
  */
 public interface ChannelCreateListener extends Listener {
 
-    /**
-     * This method is called every time a new channel is created.
-     *
-     * @param api The api.
-     * @param channel The created channel.
-     */
-    public void onChannelCreate(DiscordAPI api, Channel channel);
+	/**
+	 * This method is called every time a new channel is created.
+	 *
+	 * @param api
+	 *            The api.
+	 * @param channel
+	 *            The created channel.
+	 */
+	public void onChannelCreate(DiscordAPI api, Channel channel);
 
 }

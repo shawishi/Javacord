@@ -34,41 +34,42 @@ import java.util.List;
  */
 public class GuildBanAddHandler extends PacketHandler {
 
-    /**
-     * The logger of this class.
-     */
-    private static final Logger logger = LoggerUtil.getLogger(GuildBanAddHandler.class);
+	/**
+	 * The logger of this class.
+	 */
+	private static final Logger logger = LoggerUtil.getLogger(GuildBanAddHandler.class);
 
-    /**
-     * Creates a new instance of this class.
-     *
-     * @param api The api.
-     */
-    public GuildBanAddHandler(ImplDiscordAPI api) {
-        super(api, true, "GUILD_BAN_ADD");
-    }
+	/**
+	 * Creates a new instance of this class.
+	 *
+	 * @param api
+	 *            The api.
+	 */
+	public GuildBanAddHandler(ImplDiscordAPI api) {
+		super(api, true, "GUILD_BAN_ADD");
+	}
 
-    @Override
-    public void handle(JSONObject packet) {
-        final Server server = api.getServerById(packet.getString("guild_id"));
-        final User user = api.getOrCreateUser(packet.getJSONObject("user"));
-        if (server != null) {
-            listenerExecutorService.submit(new Runnable() {
-                @Override
-                public void run() {
-                    List<ServerMemberBanListener> listeners = api.getListeners(ServerMemberBanListener.class);
-                    synchronized (listeners) {
-                        for (ServerMemberBanListener listener : listeners) {
-                            try {
-                                listener.onServerMemberBan(api, user, server);
-                            } catch (Throwable t) {
-                                logger.warn("Uncaught exception in ServerMemberBanListener!", t);
-                            }
-                        }
-                    }
-                }
-            });
-        }
-    }
+	@Override
+	public void handle(JSONObject packet) {
+		final Server server = api.getServerById(packet.getString("guild_id"));
+		final User user = api.getOrCreateUser(packet.getJSONObject("user"));
+		if (server != null) {
+			listenerExecutorService.submit(new Runnable() {
+				@Override
+				public void run() {
+					List<ServerMemberBanListener> listeners = api.getListeners(ServerMemberBanListener.class);
+					synchronized (listeners) {
+						for (ServerMemberBanListener listener : listeners) {
+							try {
+								listener.onServerMemberBan(api, user, server);
+							} catch (Throwable t) {
+								logger.warn("Uncaught exception in ServerMemberBanListener!", t);
+							}
+						}
+					}
+				}
+			});
+		}
+	}
 
 }

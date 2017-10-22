@@ -18,12 +18,10 @@
  */
 package de.btobastian.javacord.entities.permissions.impl;
 
-
 import de.btobastian.javacord.ImplDiscordAPI;
 import de.btobastian.javacord.entities.Server;
 import de.btobastian.javacord.entities.User;
 import de.btobastian.javacord.entities.impl.ImplServer;
-import de.btobastian.javacord.entities.impl.ImplUser;
 import de.btobastian.javacord.entities.permissions.Ban;
 import org.json.JSONObject;
 
@@ -32,28 +30,28 @@ import org.json.JSONObject;
  */
 public class ImplBan implements Ban {
 
-    private final ImplServer server;
-    private final User user;
-    private final String reason;
+	private final ImplServer server;
+	private final User user;
+	private final String reason;
 
-    public ImplBan(ImplDiscordAPI api, ImplServer server, JSONObject data) {
-        this.server = server;
-        this.user = api.getOrCreateUser(data.getJSONObject("user"));
-        this.reason = data.isNull("reason") ? null : data.getString("reason");
-    }
+	public ImplBan(ImplDiscordAPI api, ImplServer server, JSONObject data) {
+		this.server = server;
+		this.user = api.getOrCreateUser(data.getJSONObject("user"));
+		this.reason = data.isNull("reason") ? null : data.getString("reason");
+	}
 
-    @Override
-    public User getUser() {
-        return user;
-    }
+	@Override
+	public User getUser() {
+		return user;
+	}
 
-    @Override
-    public Server getServer() {
-        return server;
-    }
+	@Override
+	public Server getServer() {
+		return server;
+	}
 
-    @Override
-    public String getReason() {
-        return reason;
-    }
+	@Override
+	public String getReason() {
+		return reason;
+	}
 }

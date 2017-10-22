@@ -31,39 +31,40 @@ import org.json.JSONObject;
  */
 public class ReadyHandler extends PacketHandler {
 
-    /**
-     * Creates a new instance of this class.
-     *
-     * @param api The api.
-     */
-    public ReadyHandler(ImplDiscordAPI api) {
-        super(api, false, "READY");
-    }
+	/**
+	 * Creates a new instance of this class.
+	 *
+	 * @param api
+	 *            The api.
+	 */
+	public ReadyHandler(ImplDiscordAPI api) {
+		super(api, false, "READY");
+	}
 
-    @Override
-    public void handle(JSONObject packet) {
-        JSONArray guilds = packet.getJSONArray("guilds"); // guild = server
-        for (int i = 0; i < guilds.length(); i++) {
-            JSONObject guild = guilds.getJSONObject(i);
-            if (guild.has("unavailable") && guild.getBoolean("unavailable")) {
-                // add guild to the list of unavailable servers
-                api.getUnavailableServers().add(guild.getString("id"));
-                continue;
-            }
-            new ImplServer(guild, api);
-        }
+	@Override
+	public void handle(JSONObject packet) {
+		JSONArray guilds = packet.getJSONArray("guilds"); // guild = server
+		for (int i = 0; i < guilds.length(); i++) {
+			JSONObject guild = guilds.getJSONObject(i);
+			if (guild.has("unavailable") && guild.getBoolean("unavailable")) {
+				// add guild to the list of unavailable servers
+				api.getUnavailableServers().add(guild.getString("id"));
+				continue;
+			}
+			new ImplServer(guild, api);
+		}
 
-        JSONArray privateChannels = packet.getJSONArray("private_channels");
-        for (int i = 0; i < privateChannels.length(); i++) {
-            JSONObject privateChannel = privateChannels.getJSONObject(i);
-            String id = privateChannel.getString("id");
-            User user = api.getOrCreateUser(privateChannel.getJSONObject("recipient"));
-            if (user != null) {
-                ((ImplUser) user).setUserChannelId(id);
-            }
-        }
+		JSONArray privateChannels = packet.getJSONArray("private_channels");
+		for (int i = 0; i < privateChannels.length(); i++) {
+			JSONObject privateChannel = privateChannels.getJSONObject(i);
+			String id = privateChannel.getString("id");
+			User user = api.getOrCreateUser(privateChannel.getJSONObject("recipient"));
+			if (user != null) {
+				((ImplUser) user).setUserChannelId(id);
+			}
+		}
 
-        api.setYourself(api.getOrCreateUser(packet.getJSONObject("user")));
-    }
+		api.setYourself(api.getOrCreateUser(packet.getJSONObject("user")));
+	}
 
 }

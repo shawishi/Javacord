@@ -23,19 +23,19 @@ package de.btobastian.javacord.entities.permissions;
  */
 public enum PermissionState {
 
-    /**
-     * The given {@link PermissionType type} is not set.
-     */
-    NONE(),
+	/**
+	 * The given {@link PermissionType type} is not set.
+	 */
+	NONE(),
 
-    /**
-     * The given {@link PermissionType type} is allowed.
-     */
-    ALLOWED(),
+	/**
+	 * The given {@link PermissionType type} is allowed.
+	 */
+	ALLOWED(),
 
-    /**
-     * The given {@link PermissionType type} is denied.
-     */
-    DENIED(),
+	/**
+	 * The given {@link PermissionType type} is denied.
+	 */
+	DENIED(),
 
 }

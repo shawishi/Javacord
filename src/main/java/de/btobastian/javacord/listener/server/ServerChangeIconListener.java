@@ -27,13 +27,16 @@ import de.btobastian.javacord.listener.Listener;
  */
 public interface ServerChangeIconListener extends Listener {
 
-    /**
-     * This method is called every time the icon of a server changed.
-     *
-     * @param api The api.
-     * @param server The server with the new icon.
-     * @param oldIcon The (possibly null) old icon hash of the server.
-     */
-    public void onServerChangeIcon(DiscordAPI api, Server server, String oldIcon);
+	/**
+	 * This method is called every time the icon of a server changed.
+	 *
+	 * @param api
+	 *            The api.
+	 * @param server
+	 *            The server with the new icon.
+	 * @param oldIcon
+	 *            The (possibly null) old icon hash of the server.
+	 */
+	public void onServerChangeIcon(DiscordAPI api, Server server, String oldIcon);
 
 }

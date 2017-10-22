@@ -27,13 +27,16 @@ import de.btobastian.javacord.listener.Listener;
  */
 public interface RoleChangeHoistListener extends Listener {
 
-    /**
-     * This method is called every time a role changed its hoist.
-     *
-     * @param api The api.
-     * @param role The role with the updated hoist.
-     * @param oldHoist The old hoist of the role.
-     */
-    public void onRoleChangeHoist(DiscordAPI api, Role role, boolean oldHoist);
+	/**
+	 * This method is called every time a role changed its hoist.
+	 *
+	 * @param api
+	 *            The api.
+	 * @param role
+	 *            The role with the updated hoist.
+	 * @param oldHoist
+	 *            The old hoist of the role.
+	 */
+	public void onRoleChangeHoist(DiscordAPI api, Role role, boolean oldHoist);
 
 }

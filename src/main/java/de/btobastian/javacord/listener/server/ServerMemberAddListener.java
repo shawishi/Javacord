@@ -28,13 +28,16 @@ import de.btobastian.javacord.listener.Listener;
  */
 public interface ServerMemberAddListener extends Listener {
 
-    /**
-     * This method is called every time a user joins a server
-     *
-     * @param api The api.
-     * @param user The user who joined.
-     * @param server The joined server.
-     */
-    public void onServerMemberAdd(DiscordAPI api, User user, Server server);
+	/**
+	 * This method is called every time a user joins a server
+	 *
+	 * @param api
+	 *            The api.
+	 * @param user
+	 *            The user who joined.
+	 * @param server
+	 *            The joined server.
+	 */
+	public void onServerMemberAdd(DiscordAPI api, User user, Server server);
 
 }

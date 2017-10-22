@@ -23,25 +23,25 @@ package de.btobastian.javacord.entities.message.embed;
  */
 public interface EmbedField {
 
-    /**
-     * Gets the name of the field.
-     *
-     * @return The name of the field.
-     */
-    public String getName();
+	/**
+	 * Gets the name of the field.
+	 *
+	 * @return The name of the field.
+	 */
+	public String getName();
 
-    /**
-     * Gets the value of the field.
-     *
-     * @return The value of the field.
-     */
-    public String getValue();
+	/**
+	 * Gets the value of the field.
+	 *
+	 * @return The value of the field.
+	 */
+	public String getValue();
 
-    /**
-     * Gets whether or not this field should display inline.
-     *
-     * @return Whether or not this field should display inline.
-     */
-    public boolean isInline();
+	/**
+	 * Gets whether or not this field should display inline.
+	 *
+	 * @return Whether or not this field should display inline.
+	 */
+	public boolean isInline();
 
 }

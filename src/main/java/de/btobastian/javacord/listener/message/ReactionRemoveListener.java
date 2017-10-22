@@ -28,13 +28,17 @@ import de.btobastian.javacord.listener.Listener;
  */
 public interface ReactionRemoveListener extends Listener {
 
-    /**
-     * This method is called every time a reaction was removed.
-     *
-     * @param api The api.
-     * @param reaction The updated reaction. May have a count of <code>null</code> and no longer present in the message.
-     * @param user The user who removed his reaction.
-     */
-    public void onReactionRemove(DiscordAPI api, Reaction reaction, User user);
+	/**
+	 * This method is called every time a reaction was removed.
+	 *
+	 * @param api
+	 *            The api.
+	 * @param reaction
+	 *            The updated reaction. May have a count of <code>null</code>
+	 *            and no longer present in the message.
+	 * @param user
+	 *            The user who removed his reaction.
+	 */
+	public void onReactionRemove(DiscordAPI api, Reaction reaction, User user);
 
 }

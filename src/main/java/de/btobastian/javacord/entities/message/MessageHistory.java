@@ -27,47 +27,49 @@ import java.util.List;
  */
 public interface MessageHistory {
 
-    /**
-     * Gets the message with the given id.
-     *
-     * @param id The id of the message.
-     * @return The message with the given id. <code>Null</code> if no message with the given id exists.
-     */
-    public Message getMessageById(String id);
+	/**
+	 * Gets the message with the given id.
+	 *
+	 * @param id
+	 *            The id of the message.
+	 * @return The message with the given id. <code>Null</code> if no message
+	 *         with the given id exists.
+	 */
+	public Message getMessageById(String id);
 
-    /**
-     * Gets an iterator for all messages in the history.
-     *
-     * @return The iterator for the messages.
-     */
-    public Iterator<Message> iterator();
+	/**
+	 * Gets an iterator for all messages in the history.
+	 *
+	 * @return The iterator for the messages.
+	 */
+	public Iterator<Message> iterator();
 
-    /**
-     * Gets a collection with all fetched messages.
-     *
-     * @return A collection with all fetched messages.
-     */
-    public Collection<Message> getMessages();
+	/**
+	 * Gets a collection with all fetched messages.
+	 *
+	 * @return A collection with all fetched messages.
+	 */
+	public Collection<Message> getMessages();
 
-    /**
-     * Gets the newest message in the history.
-     *
-     * @return The newest message in the history.
-     */
-    public Message getNewestMessage();
+	/**
+	 * Gets the newest message in the history.
+	 *
+	 * @return The newest message in the history.
+	 */
+	public Message getNewestMessage();
 
-    /**
-     * Gets the oldest message in the history.
-     *
-     * @return The oldest message in the history.
-     */
-    public Message getOldestMessage();
+	/**
+	 * Gets the oldest message in the history.
+	 *
+	 * @return The oldest message in the history.
+	 */
+	public Message getOldestMessage();
 
-    /**
-     * Gets a sorted list with all fetched messages.
-     *
-     * @return A sorted list with all fetched messages.
-     */
-    public List<Message> getMessagesSorted();
+	/**
+	 * Gets a sorted list with all fetched messages.
+	 *
+	 * @return A sorted list with all fetched messages.
+	 */
+	public List<Message> getMessagesSorted();
 
 }

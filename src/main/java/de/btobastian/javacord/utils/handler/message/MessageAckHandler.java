@@ -27,18 +27,19 @@ import org.json.JSONObject;
  */
 public class MessageAckHandler extends PacketHandler {
 
-    /**
-     * Creates a new instance of this class.
-     *
-     * @param api The api.
-     */
-    public MessageAckHandler(ImplDiscordAPI api) {
-        super(api, true, "MESSAGE_ACK");
-    }
+	/**
+	 * Creates a new instance of this class.
+	 *
+	 * @param api
+	 *            The api.
+	 */
+	public MessageAckHandler(ImplDiscordAPI api) {
+		super(api, true, "MESSAGE_ACK");
+	}
 
-    @Override
-    public void handle(JSONObject packet) {
-        // NOP
-    }
+	@Override
+	public void handle(JSONObject packet) {
+		// NOP
+	}
 
 }

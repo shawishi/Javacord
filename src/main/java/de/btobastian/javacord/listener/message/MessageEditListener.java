@@ -27,13 +27,16 @@ import de.btobastian.javacord.listener.Listener;
  */
 public interface MessageEditListener extends Listener {
 
-    /**
-     * This method is called every time a message was edited.
-     *
-     * @param api The api.
-     * @param message The edited message with the new content.
-     * @param oldContent The old content.
-     */
-    public void onMessageEdit(DiscordAPI api, Message message, String oldContent);
+	/**
+	 * This method is called every time a message was edited.
+	 *
+	 * @param api
+	 *            The api.
+	 * @param message
+	 *            The edited message with the new content.
+	 * @param oldContent
+	 *            The old content.
+	 */
+	public void onMessageEdit(DiscordAPI api, Message message, String oldContent);
 
 }

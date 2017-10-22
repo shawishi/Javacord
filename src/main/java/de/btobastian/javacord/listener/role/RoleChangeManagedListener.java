@@ -27,14 +27,16 @@ import de.btobastian.javacord.listener.Listener;
  */
 public interface RoleChangeManagedListener extends Listener {
 
-    /**
-     * This method is called every time a role changed its Managed.
-     *
-     * @param api The api.
-     * @param role The role with the updated managed value.
-     * @param oldManaged The old managed value of the role.
-     */
-    public void onRoleChangeManaged(DiscordAPI api, Role role, boolean oldManaged);
+	/**
+	 * This method is called every time a role changed its Managed.
+	 *
+	 * @param api
+	 *            The api.
+	 * @param role
+	 *            The role with the updated managed value.
+	 * @param oldManaged
+	 *            The old managed value of the role.
+	 */
+	public void onRoleChangeManaged(DiscordAPI api, Role role, boolean oldManaged);
 
 }
-

@@ -27,13 +27,16 @@ import de.btobastian.javacord.listener.Listener;
  */
 public interface ChannelChangeTopicListener extends Listener {
 
-    /**
-     * This method is called every time a channel changed its topic.
-     *
-     * @param api The api.
-     * @param channel The channel with the updated topic.
-     * @param oldTopic The old topic of the channel.
-     */
-    public void onChannelChangeTopic(DiscordAPI api, Channel channel, String oldTopic);
+	/**
+	 * This method is called every time a channel changed its topic.
+	 *
+	 * @param api
+	 *            The api.
+	 * @param channel
+	 *            The channel with the updated topic.
+	 * @param oldTopic
+	 *            The old topic of the channel.
+	 */
+	public void onChannelChangeTopic(DiscordAPI api, Channel channel, String oldTopic);
 
 }

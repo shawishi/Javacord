@@ -27,12 +27,14 @@ import de.btobastian.javacord.listener.Listener;
  */
 public interface RoleCreateListener extends Listener {
 
-    /**
-     * This method is called every time a new role is created.
-     *
-     * @param api The api.
-     * @param role The created role.
-     */
-    public void onRoleCreate(DiscordAPI api, Role role);
+	/**
+	 * This method is called every time a new role is created.
+	 *
+	 * @param api
+	 *            The api.
+	 * @param role
+	 *            The created role.
+	 */
+	public void onRoleCreate(DiscordAPI api, Role role);
 
 }

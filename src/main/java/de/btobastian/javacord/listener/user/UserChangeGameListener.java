@@ -27,13 +27,16 @@ import de.btobastian.javacord.listener.Listener;
  */
 public interface UserChangeGameListener extends Listener {
 
-    /**
-     * This method is called every time a user changed its game.
-     *
-     * @param api The api.
-     * @param user The user with the updated game.
-     * @param oldGame The old game of the user. May be <code>null</code>.
-     */
-    public void onUserChangeGame(DiscordAPI api, User user, String oldGame);
+	/**
+	 * This method is called every time a user changed its game.
+	 *
+	 * @param api
+	 *            The api.
+	 * @param user
+	 *            The user with the updated game.
+	 * @param oldGame
+	 *            The old game of the user. May be <code>null</code>.
+	 */
+	public void onUserChangeGame(DiscordAPI api, User user, String oldGame);
 
 }

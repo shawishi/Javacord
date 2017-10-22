@@ -27,17 +27,18 @@ import org.json.JSONObject;
  */
 public class ResumedHandler extends PacketHandler {
 
-    /**
-     * Creates a new instance of this class.
-     *
-     * @param api The api.
-     */
-    public ResumedHandler(ImplDiscordAPI api) {
-        super(api, false, "RESUMED");
-    }
+	/**
+	 * Creates a new instance of this class.
+	 *
+	 * @param api
+	 *            The api.
+	 */
+	public ResumedHandler(ImplDiscordAPI api) {
+		super(api, false, "RESUMED");
+	}
 
-    @Override
-    public void handle(JSONObject packet) {
-        // Dummy implementation
-    }
+	@Override
+	public void handle(JSONObject packet) {
+		// Dummy implementation
+	}
 }

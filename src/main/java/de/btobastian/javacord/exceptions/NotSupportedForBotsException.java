@@ -19,26 +19,26 @@
 package de.btobastian.javacord.exceptions;
 
 /**
- * This exception is always thrown when you try to access a method which
- * bots are not able to use (e.g. joining an invite).
+ * This exception is always thrown when you try to access a method which bots
+ * are not able to use (e.g. joining an invite).
  */
 public class NotSupportedForBotsException extends IllegalStateException {
 
-    /**
-     * Creates a new instance of this class.
-     */
-    public NotSupportedForBotsException() {
-        super("Bots are not able to use this method!");
-    }
+	/**
+	 * Creates a new instance of this class.
+	 */
+	public NotSupportedForBotsException() {
+		super("Bots are not able to use this method!");
+	}
 
-
-    /**
-     * Creates a new instance of this class.
-     *
-     * @param message The message of the exception.
-     */
-    public NotSupportedForBotsException(String message) {
-        super(message);
-    }
+	/**
+	 * Creates a new instance of this class.
+	 *
+	 * @param message
+	 *            The message of the exception.
+	 */
+	public NotSupportedForBotsException(String message) {
+		super(message);
+	}
 
 }

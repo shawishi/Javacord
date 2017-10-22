@@ -31,39 +31,40 @@ import java.net.URL;
  */
 public class ImplEmbedProvider implements EmbedProvider {
 
-    /**
-     * The logger of this class.
-     */
-    private static final Logger logger = LoggerUtil.getLogger(ImplEmbedProvider.class);
+	/**
+	 * The logger of this class.
+	 */
+	private static final Logger logger = LoggerUtil.getLogger(ImplEmbedProvider.class);
 
-    private String name;
-    private String url;
+	private String name;
+	private String url;
 
-    /**
-     * Creates a new instance of this class.
-     *
-     * @param data A JSONObject containing all necessary data.
-     */
-    public ImplEmbedProvider(JSONObject data) {
-        name = data.has("name") ? data.getString("name") : null;
-        url = data.has("url") ? data.getString("url") : null;
-    }
+	/**
+	 * Creates a new instance of this class.
+	 *
+	 * @param data
+	 *            A JSONObject containing all necessary data.
+	 */
+	public ImplEmbedProvider(JSONObject data) {
+		name = data.has("name") ? data.getString("name") : null;
+		url = data.has("url") ? data.getString("url") : null;
+	}
 
-    @Override
-    public String getName() {
-        return name;
-    }
+	@Override
+	public String getName() {
+		return name;
+	}
 
-    @Override
-    public URL getUrl() {
-        if (url == null) {
-            return null;
-        }
-        try {
-            return new URL(url);
-        } catch (MalformedURLException e) {
-            logger.warn("Seems like the url of the embed provider is malformed! Please contact the developer!", e);
-            return null;
-        }
-    }
+	@Override
+	public URL getUrl() {
+		if (url == null) {
+			return null;
+		}
+		try {
+			return new URL(url);
+		} catch (MalformedURLException e) {
+			logger.warn("Seems like the url of the embed provider is malformed! Please contact the developer!", e);
+			return null;
+		}
+	}
 }

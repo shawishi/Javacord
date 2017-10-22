@@ -40,92 +40,90 @@ import java.util.concurrent.Future;
  */
 public class ImplInviteBuilder implements InviteBuilder {
 
-    /**
-     * The logger of this class.
-     */
-    private static final Logger logger = LoggerUtil.getLogger(ImplInviteBuilder.class);
+	/**
+	 * The logger of this class.
+	 */
+	private static final Logger logger = LoggerUtil.getLogger(ImplInviteBuilder.class);
 
-    private final ImplDiscordAPI api;
-    private final ImplChannel textChannel;
-    private final ImplVoiceChannel voiceChannel;
+	private final ImplDiscordAPI api;
+	private final ImplChannel textChannel;
+	private final ImplVoiceChannel voiceChannel;
 
-    private int maxUses = -1;
-    private byte temporary = -1;
-    private int maxAge = -1;
+	private int maxUses = -1;
+	private byte temporary = -1;
+	private int maxAge = -1;
 
-    public ImplInviteBuilder(ImplChannel textChannel, ImplDiscordAPI api) {
-        this.textChannel = textChannel;
-        this.voiceChannel = null;
-        this.api = api;
-    }
+	public ImplInviteBuilder(ImplChannel textChannel, ImplDiscordAPI api) {
+		this.textChannel = textChannel;
+		this.voiceChannel = null;
+		this.api = api;
+	}
 
-    public ImplInviteBuilder(ImplVoiceChannel voiceChannel, ImplDiscordAPI api) {
-        this.textChannel = null;
-        this.voiceChannel = voiceChannel;
-        this.api = api;
-    }
+	public ImplInviteBuilder(ImplVoiceChannel voiceChannel, ImplDiscordAPI api) {
+		this.textChannel = null;
+		this.voiceChannel = voiceChannel;
+		this.api = api;
+	}
 
-    @Override
-    public InviteBuilder setMaxUses(int maxUses) {
-        this.maxUses = maxUses;
-        return this;
-    }
+	@Override
+	public InviteBuilder setMaxUses(int maxUses) {
+		this.maxUses = maxUses;
+		return this;
+	}
 
-    @Override
-    public InviteBuilder setTemporary(boolean temporary) {
-        this.temporary = temporary ? (byte) 1 : 0;
-        return this;
-    }
+	@Override
+	public InviteBuilder setTemporary(boolean temporary) {
+		this.temporary = temporary ? (byte) 1 : 0;
+		return this;
+	}
 
-    @Override
-    public InviteBuilder setMaxAge(int maxAge) {
-        this.maxAge = maxAge;
-        return this;
-    }
+	@Override
+	public InviteBuilder setMaxAge(int maxAge) {
+		this.maxAge = maxAge;
+		return this;
+	}
 
-    @Override
-    public Future<Invite> create() {
-        return create(null);
-    }
+	@Override
+	public Future<Invite> create() {
+		return create(null);
+	}
 
-    @Override
-    public Future<Invite> create(FutureCallback<Invite> callback) {
-        ListenableFuture<Invite> future =
-                api.getThreadPool().getListeningExecutorService().submit(new Callable<Invite>() {
-                    @Override
-                    public Invite call() throws Exception {
-                        logger.debug("Trying to create invite for channel {} (max uses: {}, temporary: {}, max age: {}",
-                                textChannel == null ? voiceChannel : textChannel, maxUses, temporary, maxAge);
-                        JSONObject jsonParam = new JSONObject();
-                        if (maxUses > 0) {
-                            jsonParam.put("max_uses", maxUses);
-                        }
-                        if (temporary > -1) {
-                            jsonParam.put("temporary", temporary == 1);
-                        }
-                        if (maxAge > 0) {
-                            jsonParam.put("max_age", maxAge);
-                        }
-                        String channelId = textChannel == null ? voiceChannel.getId() : textChannel.getId();
-                        HttpResponse<JsonNode> response = Unirest
-                                .post("https://discordapp.com/api/channels/" + channelId + "/invites")
-                                .header("authorization", api.getToken())
-                                .header("Content-Type", "application/json")
-                                .body(jsonParam.toString())
-                                .asJson();
-                        api.checkResponse(response);
-                        api.checkRateLimit(response, RateLimitType.UNKNOWN, null, null);
-                        JSONObject data = response.getBody().getObject();
-                        logger.debug("Created invite for channel {} (max uses: {}, temporary: {}, max age: {}",
-                                textChannel == null ? voiceChannel : textChannel, maxUses, temporary,
-                                data.has("max_age") ? data.getInt("max_age") : -1);
-                        return new ImplInvite(api, data);
-                    }
-                });
-        if (callback != null) {
-            Futures.addCallback(future, callback);
-        }
-        return future;
-    }
+	@Override
+	public Future<Invite> create(FutureCallback<Invite> callback) {
+		ListenableFuture<Invite> future = api.getThreadPool().getListeningExecutorService()
+				.submit(new Callable<Invite>() {
+					@Override
+					public Invite call() throws Exception {
+						logger.debug("Trying to create invite for channel {} (max uses: {}, temporary: {}, max age: {}",
+								textChannel == null ? voiceChannel : textChannel, maxUses, temporary, maxAge);
+						JSONObject jsonParam = new JSONObject();
+						if (maxUses > 0) {
+							jsonParam.put("max_uses", maxUses);
+						}
+						if (temporary > -1) {
+							jsonParam.put("temporary", temporary == 1);
+						}
+						if (maxAge > 0) {
+							jsonParam.put("max_age", maxAge);
+						}
+						String channelId = textChannel == null ? voiceChannel.getId() : textChannel.getId();
+						HttpResponse<JsonNode> response = Unirest
+								.post("https://discordapp.com/api/channels/" + channelId + "/invites")
+								.header("authorization", api.getToken()).header("Content-Type", "application/json")
+								.body(jsonParam.toString()).asJson();
+						api.checkResponse(response);
+						api.checkRateLimit(response, RateLimitType.UNKNOWN, null, null);
+						JSONObject data = response.getBody().getObject();
+						logger.debug("Created invite for channel {} (max uses: {}, temporary: {}, max age: {}",
+								textChannel == null ? voiceChannel : textChannel, maxUses, temporary,
+								data.has("max_age") ? data.getInt("max_age") : -1);
+						return new ImplInvite(api, data);
+					}
+				});
+		if (callback != null) {
+			Futures.addCallback(future, callback);
+		}
+		return future;
+	}
 
 }

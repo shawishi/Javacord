@@ -34,47 +34,48 @@ import java.util.List;
  */
 public class MessageUpdateHandler extends PacketHandler {
 
-    /**
-     * The logger of this class.
-     */
-    private static final Logger logger = LoggerUtil.getLogger(MessageUpdateHandler.class);
+	/**
+	 * The logger of this class.
+	 */
+	private static final Logger logger = LoggerUtil.getLogger(MessageUpdateHandler.class);
 
-    /**
-     * Creates a new instance of this class.
-     *
-     * @param api The api.
-     */
-    public MessageUpdateHandler(ImplDiscordAPI api) {
-        super(api, true, "MESSAGE_UPDATE");
-    }
+	/**
+	 * Creates a new instance of this class.
+	 *
+	 * @param api
+	 *            The api.
+	 */
+	public MessageUpdateHandler(ImplDiscordAPI api) {
+		super(api, true, "MESSAGE_UPDATE");
+	}
 
-    @Override
-    public void handle(JSONObject packet) {
-        String messageId = packet.getString("id");
-        final Message message = api.getMessageById(messageId);
-        if (message == null) {
-            return;
-        }
-        final String oldContent = message.getContent();
-        if (!packet.has("content")) {
-            return;
-        }
-        ((ImplMessage) message).setContent(packet.getString("content"));
-        listenerExecutorService.submit(new Runnable() {
-            @Override
-            public void run() {
-                List<MessageEditListener> listeners = api.getListeners(MessageEditListener.class);
-                synchronized (listeners) {
-                    for (MessageEditListener listener : listeners) {
-                        try {
-                            listener.onMessageEdit(api, message, oldContent);
-                        } catch (Throwable t) {
-                            logger.warn("Uncaught exception in MessageEditListener!", t);
-                        }
-                    }
-                }
-            }
-        });
-    }
+	@Override
+	public void handle(JSONObject packet) {
+		String messageId = packet.getString("id");
+		final Message message = api.getMessageById(messageId);
+		if (message == null) {
+			return;
+		}
+		final String oldContent = message.getContent();
+		if (!packet.has("content")) {
+			return;
+		}
+		((ImplMessage) message).setContent(packet.getString("content"));
+		listenerExecutorService.submit(new Runnable() {
+			@Override
+			public void run() {
+				List<MessageEditListener> listeners = api.getListeners(MessageEditListener.class);
+				synchronized (listeners) {
+					for (MessageEditListener listener : listeners) {
+						try {
+							listener.onMessageEdit(api, message, oldContent);
+						} catch (Throwable t) {
+							logger.warn("Uncaught exception in MessageEditListener!", t);
+						}
+					}
+				}
+			}
+		});
+	}
 
 }

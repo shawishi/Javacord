@@ -28,13 +28,16 @@ import de.btobastian.javacord.listener.Listener;
  */
 public interface RoleChangePermissionsListener extends Listener {
 
-    /**
-     * This method is called every time a role changed its permissions.
-     *
-     * @param api The api.
-     * @param role The role with the updated permissions.
-     * @param oldPermissions The old permissions of the role.
-     */
-    public void onRoleChangePermissions(DiscordAPI api, Role role, Permissions oldPermissions);
+	/**
+	 * This method is called every time a role changed its permissions.
+	 *
+	 * @param api
+	 *            The api.
+	 * @param role
+	 *            The role with the updated permissions.
+	 * @param oldPermissions
+	 *            The old permissions of the role.
+	 */
+	public void onRoleChangePermissions(DiscordAPI api, Role role, Permissions oldPermissions);
 
 }

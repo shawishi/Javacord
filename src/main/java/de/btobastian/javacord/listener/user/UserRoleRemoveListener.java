@@ -28,13 +28,16 @@ import de.btobastian.javacord.listener.Listener;
  */
 public interface UserRoleRemoveListener extends Listener {
 
-    /**
-     * This method is called every time a user was removed from a role.
-     *
-     * @param api The api.
-     * @param user The user who was removed from the role.
-     * @param role The role the user was removed from.
-     */
-    public void onUserRoleRemove(DiscordAPI api, User user, Role role);
+	/**
+	 * This method is called every time a user was removed from a role.
+	 *
+	 * @param api
+	 *            The api.
+	 * @param user
+	 *            The user who was removed from the role.
+	 * @param role
+	 *            The role the user was removed from.
+	 */
+	public void onUserRoleRemove(DiscordAPI api, User user, Role role);
 
 }

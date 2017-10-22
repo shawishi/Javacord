@@ -37,208 +37,211 @@ import java.util.concurrent.Future;
  */
 public class ImplInvite implements Invite {
 
-    /**
-     * The logger of this class.
-     */
-    private static final Logger logger = LoggerUtil.getLogger(ImplInvite.class);
+	/**
+	 * The logger of this class.
+	 */
+	private static final Logger logger = LoggerUtil.getLogger(ImplInvite.class);
 
-    private static final SimpleDateFormat FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
-    private static final SimpleDateFormat FORMAT_ALTERNATIVE = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-    private static final SimpleDateFormat FORMAT_ALTERNATIVE_TWO = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
+	private static final SimpleDateFormat FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+	private static final SimpleDateFormat FORMAT_ALTERNATIVE = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+	private static final SimpleDateFormat FORMAT_ALTERNATIVE_TWO = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
 
-    private final ImplDiscordAPI api;
+	private final ImplDiscordAPI api;
 
-    private final String code;
-    private final String serverId;
-    private final String serverName;
-    private final String channelId;
-    private final String channelName;
-    private final boolean voice;
-    private int maxAge = -1;
-    private boolean revoked = false;
-    private Calendar creationDate = null;
-    private int uses = -1;
-    private int maxUses = -1;
-    private boolean temporary = false;
-    private User creator = null;
+	private final String code;
+	private final String serverId;
+	private final String serverName;
+	private final String channelId;
+	private final String channelName;
+	private final boolean voice;
+	private int maxAge = -1;
+	private boolean revoked = false;
+	private Calendar creationDate = null;
+	private int uses = -1;
+	private int maxUses = -1;
+	private boolean temporary = false;
+	private User creator = null;
 
-    /**
-     * Creates a new instance of this class.
-     *
-     * @param api The api.
-     * @param data A JSONObject containing all necessary data.
-     */
-    public ImplInvite(ImplDiscordAPI api, JSONObject data) {
-        this.api = api;
-        this.code = data.getString("code");
-        this.serverId = data.getJSONObject("guild").getString("id");
-        this.serverName = data.getJSONObject("guild").getString("name");
-        this.channelId = data.getJSONObject("channel").getString("id");
-        this.channelName = data.getJSONObject("channel").getString("name");
-        this.voice = data.getJSONObject("channel").getInt("type") == 2;
-        if (data.has("max_age")) {
-            this.maxAge = data.getInt("max_age");
-        }
-        if (data.has("revoked")) {
-            this.revoked = data.getBoolean("revoked");
-        }
-        if (data.has("created_at")) {
-            String time = data.getString("created_at");
-            Calendar calendar = Calendar.getInstance();
-            synchronized (FORMAT) { // SimpleDateFormat#parse() isn't thread safe...
-                try {
-                    calendar.setTime(FORMAT.parse(time.substring(0, time.length() - 9)));
-                } catch (ParseException ignored) {
-                    try {
-                        calendar.setTime(FORMAT_ALTERNATIVE.parse(time.substring(0, time.length() - 9)));
-                    } catch (ParseException ignored2) {
-                        try {
-                            calendar.setTime(FORMAT_ALTERNATIVE_TWO.parse(time.substring(0, time.length() - 9)));
-                        } catch (ParseException e) {
-                            logger.warn("Could not parse timestamp {}. Please contact the developer!", time, e);
-                        }
-                    }
-                }
-            }
-            creationDate = calendar;
-        }
-        if (data.has("temporary")) {
-            this.temporary = data.getBoolean("temporary");
-        }
-        if (data.has("uses")) {
-            this.uses = data.getInt("uses");
-        }
-        if (data.has("max_uses")) {
-            this.maxUses = data.getInt("max_uses");
-            if (this.maxUses == 0) {
-                this.maxUses = -1;
-            }
-        }
-        if (data.has("inviter")) {
-            this.creator = api.getOrCreateUser(data.getJSONObject("inviter"));
-        }
-    }
+	/**
+	 * Creates a new instance of this class.
+	 *
+	 * @param api
+	 *            The api.
+	 * @param data
+	 *            A JSONObject containing all necessary data.
+	 */
+	public ImplInvite(ImplDiscordAPI api, JSONObject data) {
+		this.api = api;
+		this.code = data.getString("code");
+		this.serverId = data.getJSONObject("guild").getString("id");
+		this.serverName = data.getJSONObject("guild").getString("name");
+		this.channelId = data.getJSONObject("channel").getString("id");
+		this.channelName = data.getJSONObject("channel").getString("name");
+		this.voice = data.getJSONObject("channel").getInt("type") == 2;
+		if (data.has("max_age")) {
+			this.maxAge = data.getInt("max_age");
+		}
+		if (data.has("revoked")) {
+			this.revoked = data.getBoolean("revoked");
+		}
+		if (data.has("created_at")) {
+			String time = data.getString("created_at");
+			Calendar calendar = Calendar.getInstance();
+			synchronized (FORMAT) { // SimpleDateFormat#parse() isn't thread
+									// safe...
+				try {
+					calendar.setTime(FORMAT.parse(time.substring(0, time.length() - 9)));
+				} catch (ParseException ignored) {
+					try {
+						calendar.setTime(FORMAT_ALTERNATIVE.parse(time.substring(0, time.length() - 9)));
+					} catch (ParseException ignored2) {
+						try {
+							calendar.setTime(FORMAT_ALTERNATIVE_TWO.parse(time.substring(0, time.length() - 9)));
+						} catch (ParseException e) {
+							logger.warn("Could not parse timestamp {}. Please contact the developer!", time, e);
+						}
+					}
+				}
+			}
+			creationDate = calendar;
+		}
+		if (data.has("temporary")) {
+			this.temporary = data.getBoolean("temporary");
+		}
+		if (data.has("uses")) {
+			this.uses = data.getInt("uses");
+		}
+		if (data.has("max_uses")) {
+			this.maxUses = data.getInt("max_uses");
+			if (this.maxUses == 0) {
+				this.maxUses = -1;
+			}
+		}
+		if (data.has("inviter")) {
+			this.creator = api.getOrCreateUser(data.getJSONObject("inviter"));
+		}
+	}
 
-    @Override
-    public String getCode() {
-        return code;
-    }
+	@Override
+	public String getCode() {
+		return code;
+	}
 
-    @Override
-    public URL getInviteUrl() {
-        try {
-            return new URL("https://discord.gg/" + code);
-        } catch (MalformedURLException e) {
-            logger.warn("Malformed invite url of invite code {}! Please contact the developer!", code, e);
-            return null;
-        }
-    }
+	@Override
+	public URL getInviteUrl() {
+		try {
+			return new URL("https://discord.gg/" + code);
+		} catch (MalformedURLException e) {
+			logger.warn("Malformed invite url of invite code {}! Please contact the developer!", code, e);
+			return null;
+		}
+	}
 
-    @Override
-    public String getServerId() {
-        return serverId;
-    }
+	@Override
+	public String getServerId() {
+		return serverId;
+	}
 
-    @Override
-    public String getServerName() {
-        return serverName;
-    }
+	@Override
+	public String getServerName() {
+		return serverName;
+	}
 
-    @Override
-    public Server getServer() {
-        return api.getServerById(serverId);
-    }
+	@Override
+	public Server getServer() {
+		return api.getServerById(serverId);
+	}
 
-    @Override
-    public String getChannelId() {
-        return channelId;
-    }
+	@Override
+	public String getChannelId() {
+		return channelId;
+	}
 
-    @Override
-    public String getChannelName() {
-        return channelName;
-    }
+	@Override
+	public String getChannelName() {
+		return channelName;
+	}
 
-    @Override
-    public Channel getChannel() {
-        Server server = getServer();
-        return server == null ? null : server.getChannelById(channelId);
-    }
+	@Override
+	public Channel getChannel() {
+		Server server = getServer();
+		return server == null ? null : server.getChannelById(channelId);
+	}
 
-    @Override
-    public VoiceChannel getVoiceChannel() {
-        Server server = getServer();
-        return server == null ? null : server.getVoiceChannelById(channelId);
-    }
+	@Override
+	public VoiceChannel getVoiceChannel() {
+		Server server = getServer();
+		return server == null ? null : server.getVoiceChannelById(channelId);
+	}
 
-    @Override
-    public boolean isVoiceChannel() {
-        return voice;
-    }
+	@Override
+	public boolean isVoiceChannel() {
+		return voice;
+	}
 
-    @Override
-    public int getMaxAge() {
-        return maxAge;
-    }
+	@Override
+	public int getMaxAge() {
+		return maxAge;
+	}
 
-    @Override
-    public boolean isRevoked() {
-        return revoked;
-    }
+	@Override
+	public boolean isRevoked() {
+		return revoked;
+	}
 
-    @Override
-    public Calendar getCreationDate() {
-        if (creationDate == null) {
-            return null;
-        }
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(creationDate.getTime());
-        return calendar;
-    }
+	@Override
+	public Calendar getCreationDate() {
+		if (creationDate == null) {
+			return null;
+		}
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(creationDate.getTime());
+		return calendar;
+	}
 
-    @Override
-    public int getUses() {
-        return uses;
-    }
+	@Override
+	public int getUses() {
+		return uses;
+	}
 
-    @Override
-    public int getMaxUses() {
-        return maxUses;
-    }
+	@Override
+	public int getMaxUses() {
+		return maxUses;
+	}
 
-    @Override
-    public boolean isTemporary() {
-        return temporary;
-    }
+	@Override
+	public boolean isTemporary() {
+		return temporary;
+	}
 
-    @Override
-    public User getCreator() {
-        return creator;
-    }
+	@Override
+	public User getCreator() {
+		return creator;
+	}
 
-    @Override
-    public Future<Server> acceptInvite() {
-        return acceptInvite(null);
-    }
+	@Override
+	public Future<Server> acceptInvite() {
+		return acceptInvite(null);
+	}
 
-    @Override
-    public Future<Server> acceptInvite(FutureCallback<Server> callback) {
-        return api.acceptInvite(getCode(), callback);
-    }
+	@Override
+	public Future<Server> acceptInvite(FutureCallback<Server> callback) {
+		return api.acceptInvite(getCode(), callback);
+	}
 
-    @Override
-    public Future<Void> delete() {
-        return api.deleteInvite(getCode());
-    }
+	@Override
+	public Future<Void> delete() {
+		return api.deleteInvite(getCode());
+	}
 
-    @Override
-    public String toString() {
-        return getCode();
-    }
+	@Override
+	public String toString() {
+		return getCode();
+	}
 
-    @Override
-    public int hashCode() {
-        return getCode().hashCode();
-    }
+	@Override
+	public int hashCode() {
+		return getCode().hashCode();
+	}
 
 }

@@ -27,12 +27,14 @@ import de.btobastian.javacord.listener.Listener;
  */
 public interface MessageDeleteListener extends Listener {
 
-    /**
-     * This method is called every time a message was deleted.
-     *
-     * @param api The api.
-     * @param message The deleted message.
-     */
-    public void onMessageDelete(DiscordAPI api, Message message);
+	/**
+	 * This method is called every time a message was deleted.
+	 *
+	 * @param api
+	 *            The api.
+	 * @param message
+	 *            The deleted message.
+	 */
+	public void onMessageDelete(DiscordAPI api, Message message);
 
 }

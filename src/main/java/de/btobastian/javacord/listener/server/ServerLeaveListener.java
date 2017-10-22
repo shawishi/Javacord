@@ -27,12 +27,14 @@ import de.btobastian.javacord.listener.Listener;
  */
 public interface ServerLeaveListener extends Listener {
 
-    /**
-     * This method is called every time you leave or delete a server.
-     *
-     * @param api The api.
-     * @param server The left server.
-     */
-    public void onServerLeave(DiscordAPI api, Server server);
+	/**
+	 * This method is called every time you leave or delete a server.
+	 *
+	 * @param api
+	 *            The api.
+	 * @param server
+	 *            The left server.
+	 */
+	public void onServerLeave(DiscordAPI api, Server server);
 
 }

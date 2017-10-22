@@ -24,80 +24,88 @@ import de.btobastian.javacord.utils.ratelimits.RateLimitManager;
 import de.btobastian.javacord.utils.ratelimits.RateLimitType;
 
 /**
- * This exception is always thrown if we receive a response which has rate_limit.
+ * This exception is always thrown if we receive a response which has
+ * rate_limit.
  */
 public class RateLimitedException extends Exception {
 
-    private final long retryAfter;
-    private final RateLimitType type;
-    private final Server server;
-    private final Channel channel;
-    private final RateLimitManager manager;
+	private final long retryAfter;
+	private final RateLimitType type;
+	private final Server server;
+	private final Channel channel;
+	private final RateLimitManager manager;
 
-    /**
-     * Creates a new instance of this class.
-     *
-     * @param message The message of the exception.
-     * @param type The type of the rate limit.
-     * @param server The server of the rate limit. Can be <code>null</code> for non-server related limits.
-     * @param manager The rate limit manager.
-     */
-    public RateLimitedException(String message, long retryAfter, RateLimitType type, Server server, Channel channel, RateLimitManager manager) {
-        super(message);
-        this.retryAfter = retryAfter;
-        this.type = type;
-        this.server = server;
-        this.channel = channel;
-        this.manager = manager;
-    }
+	/**
+	 * Creates a new instance of this class.
+	 *
+	 * @param message
+	 *            The message of the exception.
+	 * @param type
+	 *            The type of the rate limit.
+	 * @param server
+	 *            The server of the rate limit. Can be <code>null</code> for
+	 *            non-server related limits.
+	 * @param manager
+	 *            The rate limit manager.
+	 */
+	public RateLimitedException(String message, long retryAfter, RateLimitType type, Server server, Channel channel,
+			RateLimitManager manager) {
+		super(message);
+		this.retryAfter = retryAfter;
+		this.type = type;
+		this.server = server;
+		this.channel = channel;
+		this.manager = manager;
+	}
 
-    /**
-     * Gets the type of the rate limit.
-     *
-     * @return The type of the rate limit.
-     */
-    public RateLimitType getType() {
-        return type;
-    }
+	/**
+	 * Gets the type of the rate limit.
+	 *
+	 * @return The type of the rate limit.
+	 */
+	public RateLimitType getType() {
+		return type;
+	}
 
-    /**
-     * Gets the server of the rate limit.
-     *
-     * @return The server of the rate limit. Can be <code>null</code> for non-server related limits.
-     */
-    public Server getServer() {
-        return server;
-    }
+	/**
+	 * Gets the server of the rate limit.
+	 *
+	 * @return The server of the rate limit. Can be <code>null</code> for
+	 *         non-server related limits.
+	 */
+	public Server getServer() {
+		return server;
+	}
 
-    /**
-     * Gets the "retry_after" received in the response.
-     * Retry after is the time in milliseconds we have to wait for the next request.
-     * NOTE: The value does not get updated!
-     *
-     * @return The "retry_after" received in the response.
-     */
-    public long getRetryAfter() {
-        return retryAfter;
-    }
+	/**
+	 * Gets the "retry_after" received in the response. Retry after is the time
+	 * in milliseconds we have to wait for the next request. NOTE: The value
+	 * does not get updated!
+	 *
+	 * @return The "retry_after" received in the response.
+	 */
+	public long getRetryAfter() {
+		return retryAfter;
+	}
 
-    /**
-     * The calculated time when we can send a new messages.
-     *
-     * @return The calculated time when we can send a new message.
-     */
-    public long getRetryAt() {
-        return System.currentTimeMillis() +  manager.getRateLimit(type, server, channel);
-    }
+	/**
+	 * The calculated time when we can send a new messages.
+	 *
+	 * @return The calculated time when we can send a new message.
+	 */
+	public long getRetryAt() {
+		return System.currentTimeMillis() + manager.getRateLimit(type, server, channel);
+	}
 
-    /**
-     * Causes the current thread to wait until we can retry the request.
-     */
-    public void waitTillRetry() throws InterruptedException {
-        long time = manager.getRateLimit(type, server, channel);
-        if (time < 1) {
-            return;
-        }
-        Thread.sleep(time);
-    }
+	/**
+	 * Causes the current thread to wait until we can retry the request.
+	 */
+	public void waitTillRetry() throws InterruptedException {
+		long time = manager.getRateLimit(type, server, channel);
+		if (time < 1) {
+			return;
+		}
+		Thread.sleep(time);
+	}
 
 }

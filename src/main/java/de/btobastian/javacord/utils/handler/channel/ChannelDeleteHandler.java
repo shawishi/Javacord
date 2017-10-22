@@ -37,80 +37,85 @@ import java.util.List;
  */
 public class ChannelDeleteHandler extends PacketHandler {
 
-    /**
-     * The logger of this class.
-     */
-    private static final Logger logger = LoggerUtil.getLogger(ChannelDeleteHandler.class);
+	/**
+	 * The logger of this class.
+	 */
+	private static final Logger logger = LoggerUtil.getLogger(ChannelDeleteHandler.class);
 
-    /**
-     * Creates a new instance of this class.
-     *
-     * @param api The api.
-     */
-    public ChannelDeleteHandler(ImplDiscordAPI api) {
-        super(api, true, "CHANNEL_DELETE");
-    }
+	/**
+	 * Creates a new instance of this class.
+	 *
+	 * @param api
+	 *            The api.
+	 */
+	public ChannelDeleteHandler(ImplDiscordAPI api) {
+		super(api, true, "CHANNEL_DELETE");
+	}
 
-    @Override
-    public void handle(JSONObject packet) {
-        int type = packet.getInt("type");
-        if (type == 0) {
-            handleServerTextChannel(packet, api.getServerById(packet.getString("guild_id")));
-        } else if (type == 2) {
-            handleServerVoiceChannel(packet, api.getServerById(packet.getString("guild_id")));
-        }
-    }
+	@Override
+	public void handle(JSONObject packet) {
+		int type = packet.getInt("type");
+		if (type == 0) {
+			handleServerTextChannel(packet, api.getServerById(packet.getString("guild_id")));
+		} else if (type == 2) {
+			handleServerVoiceChannel(packet, api.getServerById(packet.getString("guild_id")));
+		}
+	}
 
-    /**
-     * Handles the server text channels.
-     *
-     * @param packet The packet (the "d"-object).
-     * @param server The server of the channel.
-     */
-    private void handleServerTextChannel(JSONObject packet, Server server) {
-        final Channel channel = server.getChannelById(packet.getString("id"));
-        ((ImplServer) server).removeChannel(channel);
-        listenerExecutorService.submit(new Runnable() {
-            @Override
-            public void run() {
-                List<ChannelDeleteListener> listeners = api.getListeners(ChannelDeleteListener.class);
-                synchronized (listeners) {
-                    for (ChannelDeleteListener listener : listeners) {
-                        try {
-                            listener.onChannelDelete(api, channel);
-                        } catch (Throwable t) {
-                            logger.warn("Uncaught exception in ChannelDeleteListener!", t);
-                        }
-                    }
-                }
-            }
-        });
-    }
+	/**
+	 * Handles the server text channels.
+	 *
+	 * @param packet
+	 *            The packet (the "d"-object).
+	 * @param server
+	 *            The server of the channel.
+	 */
+	private void handleServerTextChannel(JSONObject packet, Server server) {
+		final Channel channel = server.getChannelById(packet.getString("id"));
+		((ImplServer) server).removeChannel(channel);
+		listenerExecutorService.submit(new Runnable() {
+			@Override
+			public void run() {
+				List<ChannelDeleteListener> listeners = api.getListeners(ChannelDeleteListener.class);
+				synchronized (listeners) {
+					for (ChannelDeleteListener listener : listeners) {
+						try {
+							listener.onChannelDelete(api, channel);
+						} catch (Throwable t) {
+							logger.warn("Uncaught exception in ChannelDeleteListener!", t);
+						}
+					}
+				}
+			}
+		});
+	}
 
-    /**
-     * Handles the server voice channels.
-     *
-     * @param packet The packet (the "d"-object).
-     * @param server The server of the channel.
-     */
-    private void handleServerVoiceChannel(JSONObject packet, Server server) {
-        final VoiceChannel channel = server.getVoiceChannelById(packet.getString("id"));
-        ((ImplServer) server).removeVoiceChannel(channel);
-        listenerExecutorService.submit(new Runnable() {
-            @Override
-            public void run() {
-                List<VoiceChannelDeleteListener> listeners = api.getListeners(VoiceChannelDeleteListener.class);
-                synchronized (listeners) {
-                    for (VoiceChannelDeleteListener listener : listeners) {
-                        try {
-                            listener.onVoiceChannelDelete(api, channel);
-                        } catch (Throwable t) {
-                            logger.warn("Uncaught exception in VoiceChannelDeleteListener!", t);
-                        }
-                    }
-                }
-            }
-        });
-    }
+	/**
+	 * Handles the server voice channels.
+	 *
+	 * @param packet
+	 *            The packet (the "d"-object).
+	 * @param server
+	 *            The server of the channel.
+	 */
+	private void handleServerVoiceChannel(JSONObject packet, Server server) {
+		final VoiceChannel channel = server.getVoiceChannelById(packet.getString("id"));
+		((ImplServer) server).removeVoiceChannel(channel);
+		listenerExecutorService.submit(new Runnable() {
+			@Override
+			public void run() {
+				List<VoiceChannelDeleteListener> listeners = api.getListeners(VoiceChannelDeleteListener.class);
+				synchronized (listeners) {
+					for (VoiceChannelDeleteListener listener : listeners) {
+						try {
+							listener.onVoiceChannelDelete(api, channel);
+						} catch (Throwable t) {
+							logger.warn("Uncaught exception in VoiceChannelDeleteListener!", t);
+						}
+					}
+				}
+			}
+		});
+	}
 
 }

@@ -19,17 +19,19 @@
 package de.btobastian.javacord.exceptions;
 
 /**
- * This exception is always thrown if the user hasn't enough permissions to do something.
+ * This exception is always thrown if the user hasn't enough permissions to do
+ * something.
  */
 public class PermissionsException extends Exception {
 
-    /**
-     * Creates a new instance of this class.
-     *
-     * @param message The message of the exception.
-     */
-    public PermissionsException(String message) {
-        super(message);
-    }
+	/**
+	 * Creates a new instance of this class.
+	 *
+	 * @param message
+	 *            The message of the exception.
+	 */
+	public PermissionsException(String message) {
+		super(message);
+	}
 
 }

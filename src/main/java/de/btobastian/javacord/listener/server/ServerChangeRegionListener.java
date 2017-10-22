@@ -28,13 +28,16 @@ import de.btobastian.javacord.listener.Listener;
  */
 public interface ServerChangeRegionListener extends Listener {
 
-    /**
-     * This method is called every time the region of a server changed.
-     *
-     * @param api The api.
-     * @param server The server with the new region.
-     * @param oldRegion The old region of the server.
-     */
-    public void onServerChangeRegion(DiscordAPI api, Server server, Region oldRegion);
+	/**
+	 * This method is called every time the region of a server changed.
+	 *
+	 * @param api
+	 *            The api.
+	 * @param server
+	 *            The server with the new region.
+	 * @param oldRegion
+	 *            The old region of the server.
+	 */
+	public void onServerChangeRegion(DiscordAPI api, Server server, Region oldRegion);
 
 }

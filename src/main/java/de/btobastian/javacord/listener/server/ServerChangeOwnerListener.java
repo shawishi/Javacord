@@ -27,13 +27,16 @@ import de.btobastian.javacord.listener.Listener;
  */
 public interface ServerChangeOwnerListener extends Listener {
 
-    /**
-     * This method is called every time the owner of a server changed.
-     *
-     * @param api The api.
-     * @param server The server with the new owner.
-     * @param oldOwnerId The id of the old owner of the server.
-     */
-    public void onServerChangeOwner(DiscordAPI api, Server server, String oldOwnerId);
+	/**
+	 * This method is called every time the owner of a server changed.
+	 *
+	 * @param api
+	 *            The api.
+	 * @param server
+	 *            The server with the new owner.
+	 * @param oldOwnerId
+	 *            The id of the old owner of the server.
+	 */
+	public void onServerChangeOwner(DiscordAPI api, Server server, String oldOwnerId);
 
 }

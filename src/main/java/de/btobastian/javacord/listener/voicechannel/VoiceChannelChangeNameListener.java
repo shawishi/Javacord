@@ -27,13 +27,16 @@ import de.btobastian.javacord.listener.Listener;
  */
 public interface VoiceChannelChangeNameListener extends Listener {
 
-    /**
-     * This method is called every time a voice channel changed its name.
-     *
-     * @param api The api.
-     * @param channel The voice channel with the updated name.
-     * @param oldName The old name of the voice channel.
-     */
-    public void onVoiceChannelChangeName(DiscordAPI api, VoiceChannel channel, String oldName);
+	/**
+	 * This method is called every time a voice channel changed its name.
+	 *
+	 * @param api
+	 *            The api.
+	 * @param channel
+	 *            The voice channel with the updated name.
+	 * @param oldName
+	 *            The old name of the voice channel.
+	 */
+	public void onVoiceChannelChangeName(DiscordAPI api, VoiceChannel channel, String oldName);
 
 }

@@ -19,9 +19,7 @@
 package de.btobastian.javacord.listener.message;
 
 import de.btobastian.javacord.DiscordAPI;
-import de.btobastian.javacord.entities.CustomEmoji;
 import de.btobastian.javacord.entities.User;
-import de.btobastian.javacord.entities.message.Message;
 import de.btobastian.javacord.entities.message.Reaction;
 import de.btobastian.javacord.listener.Listener;
 
@@ -30,13 +28,16 @@ import de.btobastian.javacord.listener.Listener;
  */
 public interface ReactionAddListener extends Listener {
 
-    /**
-     * This method is called every time a reaction was created.
-     *
-     * @param api The api.
-     * @param reaction The updated reaction.
-     * @param user The user who reacted.
-     */
-    public void onReactionAdd(DiscordAPI api, Reaction reaction, User user);
+	/**
+	 * This method is called every time a reaction was created.
+	 *
+	 * @param api
+	 *            The api.
+	 * @param reaction
+	 *            The updated reaction.
+	 * @param user
+	 *            The user who reacted.
+	 */
+	public void onReactionAdd(DiscordAPI api, Reaction reaction, User user);
 
 }

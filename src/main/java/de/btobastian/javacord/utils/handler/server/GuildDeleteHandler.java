@@ -33,42 +33,43 @@ import java.util.List;
  */
 public class GuildDeleteHandler extends PacketHandler {
 
-    /**
-     * The logger of this class.
-     */
-    private static final Logger logger = LoggerUtil.getLogger(GuildDeleteHandler.class);
+	/**
+	 * The logger of this class.
+	 */
+	private static final Logger logger = LoggerUtil.getLogger(GuildDeleteHandler.class);
 
-    /**
-     * Creates a new instance of this class.
-     *
-     * @param api The api.
-     */
-    public GuildDeleteHandler(ImplDiscordAPI api) {
-        super(api, true, "GUILD_DELETE");
-    }
+	/**
+	 * Creates a new instance of this class.
+	 *
+	 * @param api
+	 *            The api.
+	 */
+	public GuildDeleteHandler(ImplDiscordAPI api) {
+		super(api, true, "GUILD_DELETE");
+	}
 
-    @Override
-    public void handle(JSONObject packet) {
-        final Server server = api.getServerById(packet.getString("id"));
-        if (server == null) {
-            return;
-        }
-        api.getServerMap().remove(server.getId());
-        listenerExecutorService.submit(new Runnable() {
-            @Override
-            public void run() {
-                List<ServerLeaveListener> listeners = api.getListeners(ServerLeaveListener.class);
-                synchronized (listeners) {
-                    for (ServerLeaveListener listener : listeners) {
-                        try {
-                            listener.onServerLeave(api, server);
-                        } catch (Throwable t) {
-                            logger.warn("Uncaught exception in ServerLeaveListener!", t);
-                        }
-                    }
-                }
-            }
-        });
-    }
+	@Override
+	public void handle(JSONObject packet) {
+		final Server server = api.getServerById(packet.getString("id"));
+		if (server == null) {
+			return;
+		}
+		api.getServerMap().remove(server.getId());
+		listenerExecutorService.submit(new Runnable() {
+			@Override
+			public void run() {
+				List<ServerLeaveListener> listeners = api.getListeners(ServerLeaveListener.class);
+				synchronized (listeners) {
+					for (ServerLeaveListener listener : listeners) {
+						try {
+							listener.onServerLeave(api, server);
+						} catch (Throwable t) {
+							logger.warn("Uncaught exception in ServerLeaveListener!", t);
+						}
+					}
+				}
+			}
+		});
+	}
 
 }

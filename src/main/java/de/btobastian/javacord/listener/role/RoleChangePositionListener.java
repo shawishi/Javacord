@@ -27,13 +27,16 @@ import de.btobastian.javacord.listener.Listener;
  */
 public interface RoleChangePositionListener extends Listener {
 
-    /**
-     * This method is called every time a role changed its position.
-     *
-     * @param api The api.
-     * @param role The role with the updated position.
-     * @param oldPosition The old position of the role.
-     */
-    public void onRoleChangePosition(DiscordAPI api, Role role, int oldPosition);
+	/**
+	 * This method is called every time a role changed its position.
+	 *
+	 * @param api
+	 *            The api.
+	 * @param role
+	 *            The role with the updated position.
+	 * @param oldPosition
+	 *            The old position of the role.
+	 */
+	public void onRoleChangePosition(DiscordAPI api, Role role, int oldPosition);
 
 }

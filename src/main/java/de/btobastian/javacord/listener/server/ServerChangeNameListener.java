@@ -27,13 +27,16 @@ import de.btobastian.javacord.listener.Listener;
  */
 public interface ServerChangeNameListener extends Listener {
 
-    /**
-     * This method is called every time the name of a server changed.
-     *
-     * @param api The api.
-     * @param server The server with the new name.
-     * @param oldName The old name of the server.
-     */
-    public void onServerChangeName(DiscordAPI api, Server server, String oldName);
+	/**
+	 * This method is called every time the name of a server changed.
+	 *
+	 * @param api
+	 *            The api.
+	 * @param server
+	 *            The server with the new name.
+	 * @param oldName
+	 *            The old name of the server.
+	 */
+	public void onServerChangeName(DiscordAPI api, Server server, String oldName);
 
 }

@@ -27,12 +27,14 @@ import de.btobastian.javacord.listener.Listener;
  */
 public interface CustomEmojiDeleteListener extends Listener {
 
-    /**
-     * This method is called every time a emoji was deleted.
-     *
-     * @param api The api.
-     * @param emoji The deleted emoji.
-     */
-    public void onCustomEmojiDelete(DiscordAPI api, CustomEmoji emoji);
+	/**
+	 * This method is called every time a emoji was deleted.
+	 *
+	 * @param api
+	 *            The api.
+	 * @param emoji
+	 *            The deleted emoji.
+	 */
+	public void onCustomEmojiDelete(DiscordAPI api, CustomEmoji emoji);
 
 }

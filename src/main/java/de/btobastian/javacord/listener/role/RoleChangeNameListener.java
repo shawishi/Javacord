@@ -27,13 +27,16 @@ import de.btobastian.javacord.listener.Listener;
  */
 public interface RoleChangeNameListener extends Listener {
 
-    /**
-     * This method is called every time a role changed its name.
-     *
-     * @param api The api.
-     * @param role The role with the updated name.
-     * @param oldName The old name of the role.
-     */
-    public void onRoleChangeName(DiscordAPI api, Role role, String oldName);
+	/**
+	 * This method is called every time a role changed its name.
+	 *
+	 * @param api
+	 *            The api.
+	 * @param role
+	 *            The role with the updated name.
+	 * @param oldName
+	 *            The old name of the role.
+	 */
+	public void onRoleChangeName(DiscordAPI api, Role role, String oldName);
 
 }

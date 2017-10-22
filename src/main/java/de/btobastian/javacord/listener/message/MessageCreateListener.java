@@ -27,12 +27,14 @@ import de.btobastian.javacord.listener.Listener;
  */
 public interface MessageCreateListener extends Listener {
 
-    /**
-     * This method is called every time a new message is created.
-     *
-     * @param api The api.
-     * @param message The created message.
-     */
-    public void onMessageCreate(DiscordAPI api, Message message);
+	/**
+	 * This method is called every time a new message is created.
+	 *
+	 * @param api
+	 *            The api.
+	 * @param message
+	 *            The created message.
+	 */
+	public void onMessageCreate(DiscordAPI api, Message message);
 
 }

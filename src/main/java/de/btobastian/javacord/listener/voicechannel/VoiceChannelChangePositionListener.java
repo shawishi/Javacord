@@ -27,13 +27,16 @@ import de.btobastian.javacord.listener.Listener;
  */
 public interface VoiceChannelChangePositionListener extends Listener {
 
-    /**
-     * This method is called every time a voice channel changed its position.
-     *
-     * @param api The api.
-     * @param channel The voice channel with the updated position.
-     * @param oldPosition The old position of the voice channel.
-     */
-    public void onVoiceChannelChangePosition(DiscordAPI api, VoiceChannel channel, int oldPosition);
+	/**
+	 * This method is called every time a voice channel changed its position.
+	 *
+	 * @param api
+	 *            The api.
+	 * @param channel
+	 *            The voice channel with the updated position.
+	 * @param oldPosition
+	 *            The old position of the voice channel.
+	 */
+	public void onVoiceChannelChangePosition(DiscordAPI api, VoiceChannel channel, int oldPosition);
 
 }

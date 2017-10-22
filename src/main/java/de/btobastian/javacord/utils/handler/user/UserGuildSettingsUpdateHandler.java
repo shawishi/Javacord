@@ -27,18 +27,19 @@ import org.json.JSONObject;
  */
 public class UserGuildSettingsUpdateHandler extends PacketHandler {
 
-    /**
-     * Creates a new instance of this class.
-     *
-     * @param api The api.
-     */
-    public UserGuildSettingsUpdateHandler(ImplDiscordAPI api) {
-        super(api, true, "USER_GUILD_SETTINGS_UPDATE");
-    }
+	/**
+	 * Creates a new instance of this class.
+	 *
+	 * @param api
+	 *            The api.
+	 */
+	public UserGuildSettingsUpdateHandler(ImplDiscordAPI api) {
+		super(api, true, "USER_GUILD_SETTINGS_UPDATE");
+	}
 
-    @Override
-    public void handle(JSONObject packet) {
-        // NOP
-    }
+	@Override
+	public void handle(JSONObject packet) {
+		// NOP
+	}
 
 }

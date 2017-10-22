@@ -28,14 +28,18 @@ import de.btobastian.javacord.listener.Listener;
  */
 public interface UserChangeNicknameListener extends Listener {
 
-    /**
-     * This method is called every time a user changed its nickname.
-     *
-     * @param api The api.
-     * @param server The server.
-     * @param user The user with the updated nickname.
-     * @param oldNickname The old nickname of the user. May be <code>null</code>.
-     */
-    public void onUserChangeNickname(DiscordAPI api, Server server, User user, String oldNickname);
+	/**
+	 * This method is called every time a user changed its nickname.
+	 *
+	 * @param api
+	 *            The api.
+	 * @param server
+	 *            The server.
+	 * @param user
+	 *            The user with the updated nickname.
+	 * @param oldNickname
+	 *            The old nickname of the user. May be <code>null</code>.
+	 */
+	public void onUserChangeNickname(DiscordAPI api, Server server, User user, String oldNickname);
 
 }

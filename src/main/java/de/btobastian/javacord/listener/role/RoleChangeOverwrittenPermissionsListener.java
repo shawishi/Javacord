@@ -30,26 +30,36 @@ import de.btobastian.javacord.listener.Listener;
  */
 public interface RoleChangeOverwrittenPermissionsListener extends Listener {
 
-    /**
-     * This method is called every time a role changed its overwritten permissions.
-     *
-     * @param api The api.
-     * @param role The role with the updated permissions.
-     * @param channel The channel with the updated permissions.
-     * @param oldPermissions The old overwritten permissions of the role.
-     */
-    public void onRoleChangeOverwrittenPermissions(
-            DiscordAPI api, Role role, Channel channel, Permissions oldPermissions);
+	/**
+	 * This method is called every time a role changed its overwritten
+	 * permissions.
+	 *
+	 * @param api
+	 *            The api.
+	 * @param role
+	 *            The role with the updated permissions.
+	 * @param channel
+	 *            The channel with the updated permissions.
+	 * @param oldPermissions
+	 *            The old overwritten permissions of the role.
+	 */
+	public void onRoleChangeOverwrittenPermissions(DiscordAPI api, Role role, Channel channel,
+			Permissions oldPermissions);
 
-    /**
-     * This method is called every time a role changed its overwritten permissions.
-     *
-     * @param api The api.
-     * @param role The role with the updated permissions.
-     * @param channel The voice channel with the updated permissions.
-     * @param oldPermissions The old overwritten permissions of the role.
-     */
-    public void onRoleChangeOverwrittenPermissions(
-            DiscordAPI api, Role role, VoiceChannel channel, Permissions oldPermissions);
+	/**
+	 * This method is called every time a role changed its overwritten
+	 * permissions.
+	 *
+	 * @param api
+	 *            The api.
+	 * @param role
+	 *            The role with the updated permissions.
+	 * @param channel
+	 *            The voice channel with the updated permissions.
+	 * @param oldPermissions
+	 *            The old overwritten permissions of the role.
+	 */
+	public void onRoleChangeOverwrittenPermissions(DiscordAPI api, Role role, VoiceChannel channel,
+			Permissions oldPermissions);
 
 }

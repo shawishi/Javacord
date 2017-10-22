@@ -27,43 +27,48 @@ import java.util.concurrent.Future;
  */
 public interface InviteBuilder {
 
-    /**
-     * Sets the max uses of the invite.
-     *
-     * @param maxUses The max uses of the invite.
-     * @return This object.
-     */
-    public InviteBuilder setMaxUses(int maxUses);
+	/**
+	 * Sets the max uses of the invite.
+	 *
+	 * @param maxUses
+	 *            The max uses of the invite.
+	 * @return This object.
+	 */
+	public InviteBuilder setMaxUses(int maxUses);
 
-    /**
-     * Sets if the invite is temporary.
-     *
-     * @param temporary Whether the invite should be temporary or not.
-     * @return This object.
-     */
-    public InviteBuilder setTemporary(boolean temporary);
+	/**
+	 * Sets if the invite is temporary.
+	 *
+	 * @param temporary
+	 *            Whether the invite should be temporary or not.
+	 * @return This object.
+	 */
+	public InviteBuilder setTemporary(boolean temporary);
 
-    /**
-     * Sets the max age of the invite.
-     *
-     * @param maxAge The max age of the invite in seconds.
-     * @return This object.
-     */
-    public InviteBuilder setMaxAge(int maxAge);
+	/**
+	 * Sets the max age of the invite.
+	 *
+	 * @param maxAge
+	 *            The max age of the invite in seconds.
+	 * @return This object.
+	 */
+	public InviteBuilder setMaxAge(int maxAge);
 
-    /**
-     * Creates the invite.
-     *
-     * @return The invite.
-     */
-    public Future<Invite> create();
+	/**
+	 * Creates the invite.
+	 *
+	 * @return The invite.
+	 */
+	public Future<Invite> create();
 
-    /**
-     * Creates the invite.
-     *
-     * @param callback The callback which will be informed when the invite was created or creation failed.
-     * @return The invite.
-     */
-    public Future<Invite> create(FutureCallback<Invite> callback);
+	/**
+	 * Creates the invite.
+	 *
+	 * @param callback
+	 *            The callback which will be informed when the invite was
+	 *            created or creation failed.
+	 * @return The invite.
+	 */
+	public Future<Invite> create(FutureCallback<Invite> callback);
 
 }

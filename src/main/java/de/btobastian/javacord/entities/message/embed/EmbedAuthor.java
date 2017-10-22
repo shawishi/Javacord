@@ -25,32 +25,32 @@ import java.net.URL;
  */
 public interface EmbedAuthor {
 
-    /**
-     * Gets the name of the author.
-     *
-     * @return The name of the author.
-     */
-    public String getName();
+	/**
+	 * Gets the name of the author.
+	 *
+	 * @return The name of the author.
+	 */
+	public String getName();
 
-    /**
-     * Gets the url of the author.
-     *
-     * @return The url of the author.
-     */
-    public URL getUrl();
+	/**
+	 * Gets the url of the author.
+	 *
+	 * @return The url of the author.
+	 */
+	public URL getUrl();
 
-    /**
-     * Gets the url of the author icon.
-     *
-     * @return The url of the author icon.
-     */
-    public URL getIconUrl();
+	/**
+	 * Gets the url of the author icon.
+	 *
+	 * @return The url of the author icon.
+	 */
+	public URL getIconUrl();
 
-    /**
-     * Gets the proxy url of the author icon.
-     *
-     * @return The proxy url of the author icon.
-     */
-    public URL getProxyIconUrl();
+	/**
+	 * Gets the proxy url of the author icon.
+	 *
+	 * @return The proxy url of the author icon.
+	 */
+	public URL getProxyIconUrl();
 
 }

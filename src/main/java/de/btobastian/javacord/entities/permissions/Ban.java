@@ -22,30 +22,30 @@ import de.btobastian.javacord.entities.Server;
 import de.btobastian.javacord.entities.User;
 
 /**
- * This interface represents a ban. Note: Ban-Objects are nor unique.
- * There may exist more than one instance for the same ban!
+ * This interface represents a ban. Note: Ban-Objects are nor unique. There may
+ * exist more than one instance for the same ban!
  */
 public interface Ban {
 
-    /**
-     * Gets the banned user.
-     *
-     * @return The banned used.
-     */
-    public User getUser();
+	/**
+	 * Gets the banned user.
+	 *
+	 * @return The banned used.
+	 */
+	public User getUser();
 
-    /**
-     * Gets the server of the ban.
-     *
-     * @return The server of the ban.
-     */
-    public Server getServer();
+	/**
+	 * Gets the server of the ban.
+	 *
+	 * @return The server of the ban.
+	 */
+	public Server getServer();
 
-    /**
-     * Gets the reason for the ban.
-     *
-     * @return The reason for the ban. May be <code>null</code>!
-     */
-    public String getReason();
+	/**
+	 * Gets the reason for the ban.
+	 *
+	 * @return The reason for the ban. May be <code>null</code>!
+	 */
+	public String getReason();
 
 }

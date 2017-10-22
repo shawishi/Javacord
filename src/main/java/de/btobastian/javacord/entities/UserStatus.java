@@ -23,42 +23,43 @@ package de.btobastian.javacord.entities;
  */
 public enum UserStatus {
 
-    /**
-     * The user is online.
-     */
-    ONLINE(),
+	/**
+	 * The user is online.
+	 */
+	ONLINE(),
 
-    /**
-     * The user is idle.
-     */
-    IDLE(),
-    /**
-     * The user is dnd
-     */
-    DO_NOT_DISTURB(),
-    /**
-     * Ths user is offline.
-     */
-    OFFLINE();
+	/**
+	 * The user is idle.
+	 */
+	IDLE(),
+	/**
+	 * The user is dnd
+	 */
+	DO_NOT_DISTURB(),
+	/**
+	 * Ths user is offline.
+	 */
+	OFFLINE();
 
-    /**
-     * Gets the status from the given String.
-     *
-     * @param str The string, e.g. "online".
-     *
-     * @return The status.
-     */
-    public static UserStatus fromString(String str) {
-        switch (str) {
-            case "online":
-                return ONLINE;
-            case "idle":
-                return IDLE;
-            case"dnd":
-                return DO_NOT_DISTURB;
-            default:
-                return OFFLINE;
-        }
-    }
+	/**
+	 * Gets the status from the given String.
+	 *
+	 * @param str
+	 *            The string, e.g. "online".
+	 *
+	 * @return The status.
+	 */
+	public static UserStatus fromString(String str) {
+		switch (str) {
+		case "online":
+			return ONLINE;
+		case "idle":
+			return IDLE;
+		case "dnd":
+			return DO_NOT_DISTURB;
+		default:
+			return OFFLINE;
+		}
+	}
 
 }

@@ -34,43 +34,44 @@ import java.util.List;
  */
 public class MessageCreateHandler extends PacketHandler {
 
-    /**
-     * The logger of this class.
-     */
-    private static final Logger logger = LoggerUtil.getLogger(MessageCreateHandler.class);
+	/**
+	 * The logger of this class.
+	 */
+	private static final Logger logger = LoggerUtil.getLogger(MessageCreateHandler.class);
 
-    /**
-     * Creates a new instance of this class.
-     *
-     * @param api The api.
-     */
-    public MessageCreateHandler(ImplDiscordAPI api) {
-        super(api, true, "MESSAGE_CREATE");
-    }
+	/**
+	 * Creates a new instance of this class.
+	 *
+	 * @param api
+	 *            The api.
+	 */
+	public MessageCreateHandler(ImplDiscordAPI api) {
+		super(api, true, "MESSAGE_CREATE");
+	}
 
-    @Override
-    public void handle(JSONObject packet) {
-        String messageId = packet.getString("id");
-        Message messageTemp = api.getMessageById(messageId);
-        if (messageTemp == null) {
-            messageTemp = new ImplMessage(packet, api, null);
-        }
-        final Message message = messageTemp;
-        listenerExecutorService.submit(new Runnable() {
-            @Override
-            public void run() {
-                List<MessageCreateListener> listeners = api.getListeners(MessageCreateListener.class);
-                synchronized (listeners) {
-                    for (MessageCreateListener listener : listeners) {
-                        try {
-                            listener.onMessageCreate(api, message);
-                        } catch (Throwable t) {
-                            logger.warn("Uncaught exception in MessageCreateListener!", t);
-                        }
-                    }
-                }
-            }
-        });
-    }
+	@Override
+	public void handle(JSONObject packet) {
+		String messageId = packet.getString("id");
+		Message messageTemp = api.getMessageById(messageId);
+		if (messageTemp == null) {
+			messageTemp = new ImplMessage(packet, api, null);
+		}
+		final Message message = messageTemp;
+		listenerExecutorService.submit(new Runnable() {
+			@Override
+			public void run() {
+				List<MessageCreateListener> listeners = api.getListeners(MessageCreateListener.class);
+				synchronized (listeners) {
+					for (MessageCreateListener listener : listeners) {
+						try {
+							listener.onMessageCreate(api, message);
+						} catch (Throwable t) {
+							logger.warn("Uncaught exception in MessageCreateListener!", t);
+						}
+					}
+				}
+			}
+		});
+	}
 
 }

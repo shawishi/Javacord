@@ -34,49 +34,50 @@ import java.util.List;
  */
 public class MessageDeleteHandler extends PacketHandler {
 
-    /**
-     * The logger of this class.
-     */
-    private static final Logger logger = LoggerUtil.getLogger(MessageDeleteHandler.class);
+	/**
+	 * The logger of this class.
+	 */
+	private static final Logger logger = LoggerUtil.getLogger(MessageDeleteHandler.class);
 
-    /**
-     * Creates a new instance of this class.
-     *
-     * @param api The api.
-     */
-    public MessageDeleteHandler(ImplDiscordAPI api) {
-        super(api, true, "MESSAGE_DELETE");
-    }
+	/**
+	 * Creates a new instance of this class.
+	 *
+	 * @param api
+	 *            The api.
+	 */
+	public MessageDeleteHandler(ImplDiscordAPI api) {
+		super(api, true, "MESSAGE_DELETE");
+	}
 
-    @Override
-    public void handle(JSONObject packet) {
-        String messageId = packet.getString("id");
-        final Message message = api.getMessageById(messageId);
-        if (message == null) {
-            return; // no cached version available
-        }
-        synchronized (message) {
-            if (message.isDeleted()) {
-                return; // already called listener
-            } else {
-                ((ImplMessage) message).setDeleted(true);
-            }
-        }
-        listenerExecutorService.submit(new Runnable() {
-            @Override
-            public void run() {
-                List<MessageDeleteListener> listeners = api.getListeners(MessageDeleteListener.class);
-                synchronized (listeners) {
-                    for (MessageDeleteListener listener : listeners) {
-                        try {
-                            listener.onMessageDelete(api, message);
-                        } catch (Throwable t) {
-                            logger.warn("Uncaught exception in MessageDeleteListener!", t);
-                        }
-                    }
-                }
-            }
-        });
-    }
+	@Override
+	public void handle(JSONObject packet) {
+		String messageId = packet.getString("id");
+		final Message message = api.getMessageById(messageId);
+		if (message == null) {
+			return; // no cached version available
+		}
+		synchronized (message) {
+			if (message.isDeleted()) {
+				return; // already called listener
+			} else {
+				((ImplMessage) message).setDeleted(true);
+			}
+		}
+		listenerExecutorService.submit(new Runnable() {
+			@Override
+			public void run() {
+				List<MessageDeleteListener> listeners = api.getListeners(MessageDeleteListener.class);
+				synchronized (listeners) {
+					for (MessageDeleteListener listener : listeners) {
+						try {
+							listener.onMessageDelete(api, message);
+						} catch (Throwable t) {
+							logger.warn("Uncaught exception in MessageDeleteListener!", t);
+						}
+					}
+				}
+			}
+		});
+	}
 
 }

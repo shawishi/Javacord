@@ -28,13 +28,16 @@ import de.btobastian.javacord.listener.Listener;
  */
 public interface ServerMemberBanListener extends Listener {
 
-    /**
-     * This method is called every time a user got banned from a server.
-     *
-     * @param api The api.
-     * @param user The user who was banned.
-     * @param server The server the user was banned from.
-     */
-    public void onServerMemberBan(DiscordAPI api, User user, Server server);
+	/**
+	 * This method is called every time a user got banned from a server.
+	 *
+	 * @param api
+	 *            The api.
+	 * @param user
+	 *            The user who was banned.
+	 * @param server
+	 *            The server the user was banned from.
+	 */
+	public void onServerMemberBan(DiscordAPI api, User user, Server server);
 
 }

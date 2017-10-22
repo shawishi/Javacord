@@ -28,96 +28,95 @@ import java.util.Collection;
  */
 public interface Embed {
 
-    /**
-     * Gets the title of the embed.
-     *
-     * @return The title of the embed.
-     */
-    public String getTitle();
+	/**
+	 * Gets the title of the embed.
+	 *
+	 * @return The title of the embed.
+	 */
+	public String getTitle();
 
-    /**
-     * Gets the type of the embed.
-     * (always "rich" for webhook embeds)
-     *
-     * @return The type of the embed.
-     */
-    public String getType();
+	/**
+	 * Gets the type of the embed. (always "rich" for webhook embeds)
+	 *
+	 * @return The type of the embed.
+	 */
+	public String getType();
 
-    /**
-     * Gets the description of the embed.
-     *
-     * @return The description of the embed.
-     */
-    public String getDescription();
+	/**
+	 * Gets the description of the embed.
+	 *
+	 * @return The description of the embed.
+	 */
+	public String getDescription();
 
-    /**
-     * Gets the url of the embed.
-     *
-     * @return The url of the embed.
-     */
-    public URL getUrl();
+	/**
+	 * Gets the url of the embed.
+	 *
+	 * @return The url of the embed.
+	 */
+	public URL getUrl();
 
-    /**
-     * Gets the date of creation.
-     *
-     * @return The date of creation.
-     */
-    public Calendar getCreationDate();
+	/**
+	 * Gets the date of creation.
+	 *
+	 * @return The date of creation.
+	 */
+	public Calendar getCreationDate();
 
-    /**
-     * Gets the color of the embed.
-     *
-     * @return The color of the embed.
-     */
-    public Color getColor();
+	/**
+	 * Gets the color of the embed.
+	 *
+	 * @return The color of the embed.
+	 */
+	public Color getColor();
 
-    /**
-     * Gets the footer of the embed.
-     *
-     * @return The footer of the embed.
-     */
-    public EmbedFooter getFooter();
+	/**
+	 * Gets the footer of the embed.
+	 *
+	 * @return The footer of the embed.
+	 */
+	public EmbedFooter getFooter();
 
-    /**
-     * Gets the image of the embed.
-     *
-     * @return The image of the embed.
-     */
-    public EmbedImage getImage();
+	/**
+	 * Gets the image of the embed.
+	 *
+	 * @return The image of the embed.
+	 */
+	public EmbedImage getImage();
 
-    /**
-     * Gets the thumbnail of the embed.
-     *
-     * @return The thumbnail of the embed.
-     */
-    public EmbedThumbnail getThumbnail();
+	/**
+	 * Gets the thumbnail of the embed.
+	 *
+	 * @return The thumbnail of the embed.
+	 */
+	public EmbedThumbnail getThumbnail();
 
-    /**
-     * Gets the video of the embed.
-     *
-     * @return The video of the embed.
-     */
-    public EmbedVideo getVideo();
+	/**
+	 * Gets the video of the embed.
+	 *
+	 * @return The video of the embed.
+	 */
+	public EmbedVideo getVideo();
 
-    /**
-     * Gets the provider of the embed.
-     *
-     * @return The provider of the embed.
-     */
-    public EmbedProvider getProvider();
+	/**
+	 * Gets the provider of the embed.
+	 *
+	 * @return The provider of the embed.
+	 */
+	public EmbedProvider getProvider();
 
-    /**
-     * Gets the author of the embed.
-     *
-     * @return The author of the embed.
-     */
-    public EmbedAuthor getAuthor();
+	/**
+	 * Gets the author of the embed.
+	 *
+	 * @return The author of the embed.
+	 */
+	public EmbedAuthor getAuthor();
 
-    /**
-     * Gets the fields of the embed.
-     *
-     * @return The fields of the embed.
-     */
-    public Collection<EmbedField> getFields();
+	/**
+	 * Gets the fields of the embed.
+	 *
+	 * @return The fields of the embed.
+	 */
+	public Collection<EmbedField> getFields();
 
 }

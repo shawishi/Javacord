@@ -32,105 +32,109 @@ import java.util.concurrent.Future;
  */
 public interface CustomEmoji {
 
-    /**
-     * Gets the id of the emoji.
-     *
-     * @return The id of the emoji.
-     */
-    public String getId();
+	/**
+	 * Gets the id of the emoji.
+	 *
+	 * @return The id of the emoji.
+	 */
+	public String getId();
 
-    /**
-     * Gets the creation date of the custom emoji.
-     *
-     * @return The creation date of the custom emoji.
-     */
-    public Calendar getCreationDate();
+	/**
+	 * Gets the creation date of the custom emoji.
+	 *
+	 * @return The creation date of the custom emoji.
+	 */
+	public Calendar getCreationDate();
 
-    /**
-     * Gets the name of the emoji.
-     *
-     * @return The name of the emoji.
-     */
-    public String getName();
+	/**
+	 * Gets the name of the emoji.
+	 *
+	 * @return The name of the emoji.
+	 */
+	public String getName();
 
-    /**
-     * Gets the server of the emoji.
-     *
-     * @return The server of the emoji.
-     */
-    public Server getServer();
+	/**
+	 * Gets the server of the emoji.
+	 *
+	 * @return The server of the emoji.
+	 */
+	public Server getServer();
 
-    /**
-     * Gets whether the emoji is managed.
-     *
-     * @return Whether the emoji is managed.
-     */
-    public boolean isManaged();
+	/**
+	 * Gets whether the emoji is managed.
+	 *
+	 * @return Whether the emoji is managed.
+	 */
+	public boolean isManaged();
 
-    /**
-     * Gets whether the emoji must be wrapped in colons.
-     *
-     * @return Whether the emoji must be wrapped in colons.
-     */
-    public boolean requiresColons();
+	/**
+	 * Gets whether the emoji must be wrapped in colons.
+	 *
+	 * @return Whether the emoji must be wrapped in colons.
+	 */
+	public boolean requiresColons();
 
-    /**
-     * Gets the roles this emoji is active for.
-     *
-     * @return The roles this emoji is active for.
-     */
-    public Collection<Role> getRoles();
+	/**
+	 * Gets the roles this emoji is active for.
+	 *
+	 * @return The roles this emoji is active for.
+	 */
+	public Collection<Role> getRoles();
 
-    /**
-     * Gets the tag which is used to display the emoji.
-     *
-     * @return The tag which is used to display the emoji.
-     */
-    public String getMentionTag();
+	/**
+	 * Gets the tag which is used to display the emoji.
+	 *
+	 * @return The tag which is used to display the emoji.
+	 */
+	public String getMentionTag();
 
-    /**
-     * Gets the emoji as byte array.
-     *
-     * @return The png-image of the emoji.
-     */
-    public Future<byte[]> getEmojiAsByteArray();
+	/**
+	 * Gets the emoji as byte array.
+	 *
+	 * @return The png-image of the emoji.
+	 */
+	public Future<byte[]> getEmojiAsByteArray();
 
-    /**
-     * Gets the emoji as byte array.
-     *
-     * @param callback The callback which will be informed when the emoji was downloaded.
-     *                 The array is the png-image of the emoji.
-     * @return The png-image of the emoji.
-     */
-    public Future<byte[]> getEmojiAsByteArray(FutureCallback<byte[]> callback);
+	/**
+	 * Gets the emoji as byte array.
+	 *
+	 * @param callback
+	 *            The callback which will be informed when the emoji was
+	 *            downloaded. The array is the png-image of the emoji.
+	 * @return The png-image of the emoji.
+	 */
+	public Future<byte[]> getEmojiAsByteArray(FutureCallback<byte[]> callback);
 
-    /**
-     * Gets the emoji.
-     *
-     * @return The png-image of the emoji.
-     */
-    public Future<BufferedImage> getEmoji();
+	/**
+	 * Gets the emoji.
+	 *
+	 * @return The png-image of the emoji.
+	 */
+	public Future<BufferedImage> getEmoji();
 
-    /**
-     * Gets the emoji.
-     *
-     * @param callback The callback which will be informed when the emoji was downloaded.
-     * @return The png-image of the emoji.
-     */
-    public Future<BufferedImage> getEmoji(FutureCallback<BufferedImage> callback);
+	/**
+	 * Gets the emoji.
+	 *
+	 * @param callback
+	 *            The callback which will be informed when the emoji was
+	 *            downloaded.
+	 * @return The png-image of the emoji.
+	 */
+	public Future<BufferedImage> getEmoji(FutureCallback<BufferedImage> callback);
 
-    /**
-     * Gets the url of the emoji image.
-     *
-     * @return The url of the emoji image.
-     */
-    public URL getImageUrl();
+	/**
+	 * Gets the url of the emoji image.
+	 *
+	 * @return The url of the emoji image.
+	 */
+	public URL getImageUrl();
 
-    /**
-     * Deletes the emoji.
-     *
-     * @return A future which tells us whether the deletion was successful or not.
-     */
-    public Future<Void> delete();
+	/**
+	 * Deletes the emoji.
+	 *
+	 * @return A future which tells us whether the deletion was successful or
+	 *         not.
+	 */
+	public Future<Void> delete();
 
 }

@@ -35,43 +35,44 @@ import java.util.List;
  */
 public class GuildMemberAddHandler extends PacketHandler {
 
-    /**
-     * The logger of this class.
-     */
-    private static final Logger logger = LoggerUtil.getLogger(GuildMemberAddHandler.class);
+	/**
+	 * The logger of this class.
+	 */
+	private static final Logger logger = LoggerUtil.getLogger(GuildMemberAddHandler.class);
 
-    /**
-     * Creates a new instance of this class.
-     *
-     * @param api The api.
-     */
-    public GuildMemberAddHandler(ImplDiscordAPI api) {
-        super(api, true, "GUILD_MEMBER_ADD");
-    }
+	/**
+	 * Creates a new instance of this class.
+	 *
+	 * @param api
+	 *            The api.
+	 */
+	public GuildMemberAddHandler(ImplDiscordAPI api) {
+		super(api, true, "GUILD_MEMBER_ADD");
+	}
 
-    @Override
-    public void handle(JSONObject packet) {
-        final Server server = api.getServerById(packet.getString("guild_id"));
-        final User user = api.getOrCreateUser(packet.getJSONObject("user"));
-        if (server != null) {
-            ((ImplServer) server).addMember(user);
-            ((ImplServer) server).incrementMemberCount();
-            listenerExecutorService.submit(new Runnable() {
-                @Override
-                public void run() {
-                    List<ServerMemberAddListener> listeners = api.getListeners(ServerMemberAddListener.class);
-                    synchronized (listeners) {
-                        for (ServerMemberAddListener listener : listeners) {
-                            try {
-                                listener.onServerMemberAdd(api, user, server);
-                            } catch (Throwable t) {
-                                logger.warn("Uncaught exception in ServerMemberAddListener!", t);
-                            }
-                        }
-                    }
-                }
-            });
-        }
-    }
+	@Override
+	public void handle(JSONObject packet) {
+		final Server server = api.getServerById(packet.getString("guild_id"));
+		final User user = api.getOrCreateUser(packet.getJSONObject("user"));
+		if (server != null) {
+			((ImplServer) server).addMember(user);
+			((ImplServer) server).incrementMemberCount();
+			listenerExecutorService.submit(new Runnable() {
+				@Override
+				public void run() {
+					List<ServerMemberAddListener> listeners = api.getListeners(ServerMemberAddListener.class);
+					synchronized (listeners) {
+						for (ServerMemberAddListener listener : listeners) {
+							try {
+								listener.onServerMemberAdd(api, user, server);
+							} catch (Throwable t) {
+								logger.warn("Uncaught exception in ServerMemberAddListener!", t);
+							}
+						}
+					}
+				}
+			});
+		}
+	}
 
 }

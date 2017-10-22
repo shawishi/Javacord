@@ -28,13 +28,16 @@ import de.btobastian.javacord.listener.Listener;
  */
 public interface ServerMemberRemoveListener extends Listener {
 
-    /**
-     * This method is called every time a user leaves a server
-     *
-     * @param api The api.
-     * @param user The user who left.
-     * @param server The left server.
-     */
-    public void onServerMemberRemove(DiscordAPI api, User user, Server server);
+	/**
+	 * This method is called every time a user leaves a server
+	 *
+	 * @param api
+	 *            The api.
+	 * @param user
+	 *            The user who left.
+	 * @param server
+	 *            The left server.
+	 */
+	public void onServerMemberRemove(DiscordAPI api, User user, Server server);
 
 }

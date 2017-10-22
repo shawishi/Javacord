@@ -31,62 +31,63 @@ import java.net.URL;
  */
 public class ImplEmbedImage implements EmbedImage {
 
-    /**
-     * The logger of this class.
-     */
-    private static final Logger logger = LoggerUtil.getLogger(ImplEmbedImage.class);
+	/**
+	 * The logger of this class.
+	 */
+	private static final Logger logger = LoggerUtil.getLogger(ImplEmbedImage.class);
 
-    private String url;
-    private String proxyUrl;
-    private int height;
-    private int width;
+	private String url;
+	private String proxyUrl;
+	private int height;
+	private int width;
 
-    /**
-     * Creates a new instance of this class.
-     *
-     * @param data A JSONObject containing all necessary data.
-     */
-    public ImplEmbedImage(JSONObject data) {
-        url = data.has("url") ? data.getString("url") : null;
-        proxyUrl = data.has("proxy_url") ? data.getString("proxy_url") : null;
-        height = data.has("height") ? data.getInt("height") : -1;
-        width = data.has("width") ? data.getInt("width") : -1;
-    }
+	/**
+	 * Creates a new instance of this class.
+	 *
+	 * @param data
+	 *            A JSONObject containing all necessary data.
+	 */
+	public ImplEmbedImage(JSONObject data) {
+		url = data.has("url") ? data.getString("url") : null;
+		proxyUrl = data.has("proxy_url") ? data.getString("proxy_url") : null;
+		height = data.has("height") ? data.getInt("height") : -1;
+		width = data.has("width") ? data.getInt("width") : -1;
+	}
 
-    @Override
-    public URL getUrl() {
-        if (url == null) {
-            return null;
-        }
-        try {
-            return new URL(url);
-        } catch (MalformedURLException e) {
-            logger.warn("Seems like the url of the embed image is malformed! Please contact the developer!", e);
-            return null;
-        }
-    }
+	@Override
+	public URL getUrl() {
+		if (url == null) {
+			return null;
+		}
+		try {
+			return new URL(url);
+		} catch (MalformedURLException e) {
+			logger.warn("Seems like the url of the embed image is malformed! Please contact the developer!", e);
+			return null;
+		}
+	}
 
-    @Override
-    public URL getProxyUrl() {
-        if (proxyUrl == null) {
-            return null;
-        }
-        try {
-            return new URL(proxyUrl);
-        } catch (MalformedURLException e) {
-            logger.warn("Seems like the proxy url of the embed image is malformed! Please contact the developer!", e);
-            return null;
-        }
-    }
+	@Override
+	public URL getProxyUrl() {
+		if (proxyUrl == null) {
+			return null;
+		}
+		try {
+			return new URL(proxyUrl);
+		} catch (MalformedURLException e) {
+			logger.warn("Seems like the proxy url of the embed image is malformed! Please contact the developer!", e);
+			return null;
+		}
+	}
 
-    @Override
-    public int getHeight() {
-        return height;
-    }
+	@Override
+	public int getHeight() {
+		return height;
+	}
 
-    @Override
-    public int getWidth() {
-        return width;
-    }
+	@Override
+	public int getWidth() {
+		return width;
+	}
 
 }

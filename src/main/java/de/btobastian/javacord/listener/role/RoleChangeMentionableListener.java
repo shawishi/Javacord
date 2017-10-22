@@ -27,14 +27,16 @@ import de.btobastian.javacord.listener.Listener;
  */
 public interface RoleChangeMentionableListener extends Listener {
 
-    /**
-     * This method is called every time a role changed its Mentionable.
-     *
-     * @param api The api.
-     * @param role The role with the updated name.
-     * @param oldMentionable The old mentionable value of the role.
-     */
-    public void onRoleChangeMentionable(DiscordAPI api, Role role, boolean oldMentionable);
+	/**
+	 * This method is called every time a role changed its Mentionable.
+	 *
+	 * @param api
+	 *            The api.
+	 * @param role
+	 *            The role with the updated name.
+	 * @param oldMentionable
+	 *            The old mentionable value of the role.
+	 */
+	public void onRoleChangeMentionable(DiscordAPI api, Role role, boolean oldMentionable);
 
 }
-

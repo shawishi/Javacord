@@ -38,133 +38,134 @@ import java.util.List;
  */
 public class GuildRoleUpdateHandler extends PacketHandler {
 
-    /**
-     * The logger of this class.
-     */
-    private static final Logger logger = LoggerUtil.getLogger(GuildRoleUpdateHandler.class);
+	/**
+	 * The logger of this class.
+	 */
+	private static final Logger logger = LoggerUtil.getLogger(GuildRoleUpdateHandler.class);
 
-    /**
-     * Creates a new instance of this class.
-     *
-     * @param api The api.
-     */
-    public GuildRoleUpdateHandler(ImplDiscordAPI api) {
-        super(api, true, "GUILD_ROLE_UPDATE");
-    }
+	/**
+	 * Creates a new instance of this class.
+	 *
+	 * @param api
+	 *            The api.
+	 */
+	public GuildRoleUpdateHandler(ImplDiscordAPI api) {
+		super(api, true, "GUILD_ROLE_UPDATE");
+	}
 
-    @Override
-    public void handle(JSONObject packet) {
-        String guildId = packet.getString("guild_id");
-        JSONObject roleJson = packet.getJSONObject("role");
+	@Override
+	public void handle(JSONObject packet) {
+		String guildId = packet.getString("guild_id");
+		JSONObject roleJson = packet.getJSONObject("role");
 
-        Server server = api.getServerById(guildId);
-        final ImplRole role = (ImplRole) server.getRoleById(roleJson.getString("id"));
+		Server server = api.getServerById(guildId);
+		final ImplRole role = (ImplRole) server.getRoleById(roleJson.getString("id"));
 
-        String name = roleJson.getString("name");
-        if (!role.getName().equals(name)) {
-            final String oldName = role.getName();
-            role.setName(name);
-            listenerExecutorService.submit(new Runnable() {
-                @Override
-                public void run() {
-                    List<RoleChangeNameListener> listeners = api.getListeners(RoleChangeNameListener.class);
-                    synchronized (listeners) {
-                        for (RoleChangeNameListener listener : listeners) {
-                            try {
-                                listener.onRoleChangeName(api, role, oldName);
-                            } catch (Throwable t) {
-                                logger.warn("Uncaught exception in RoleChangeNameListener!", t);
-                            }
-                        }
-                    }
-                }
-            });
-        }
+		String name = roleJson.getString("name");
+		if (!role.getName().equals(name)) {
+			final String oldName = role.getName();
+			role.setName(name);
+			listenerExecutorService.submit(new Runnable() {
+				@Override
+				public void run() {
+					List<RoleChangeNameListener> listeners = api.getListeners(RoleChangeNameListener.class);
+					synchronized (listeners) {
+						for (RoleChangeNameListener listener : listeners) {
+							try {
+								listener.onRoleChangeName(api, role, oldName);
+							} catch (Throwable t) {
+								logger.warn("Uncaught exception in RoleChangeNameListener!", t);
+							}
+						}
+					}
+				}
+			});
+		}
 
-        Permissions permissions = new ImplPermissions(roleJson.getInt("permissions"));
-        if (!role.getPermissions().equals(permissions)) {
-            final Permissions oldPermissions = role.getPermissions();
-            role.setPermissions((ImplPermissions) permissions);
-            listenerExecutorService.submit(new Runnable() {
-                @Override
-                public void run() {
-                    List<RoleChangePermissionsListener> listeners =
-                            api.getListeners(RoleChangePermissionsListener.class);
-                    synchronized (listeners) {
-                        for (RoleChangePermissionsListener listener : listeners) {
-                            try {
-                                listener.onRoleChangePermissions(api, role, oldPermissions);
-                            } catch (Throwable t) {
-                                logger.warn("Uncaught exception in RoleChangePermissionsListener!", t);
-                            }
-                        }
-                    }
-                }
-            });
-        }
+		Permissions permissions = new ImplPermissions(roleJson.getInt("permissions"));
+		if (!role.getPermissions().equals(permissions)) {
+			final Permissions oldPermissions = role.getPermissions();
+			role.setPermissions((ImplPermissions) permissions);
+			listenerExecutorService.submit(new Runnable() {
+				@Override
+				public void run() {
+					List<RoleChangePermissionsListener> listeners = api
+							.getListeners(RoleChangePermissionsListener.class);
+					synchronized (listeners) {
+						for (RoleChangePermissionsListener listener : listeners) {
+							try {
+								listener.onRoleChangePermissions(api, role, oldPermissions);
+							} catch (Throwable t) {
+								logger.warn("Uncaught exception in RoleChangePermissionsListener!", t);
+							}
+						}
+					}
+				}
+			});
+		}
 
-        Color color = new Color(roleJson.getInt("color"));
-        if (role.getColor().getRGB() != color.getRGB()) {
-            final Color oldColor = role.getColor();
-            role.setColor(color);
-            listenerExecutorService.submit(new Runnable() {
-                @Override
-                public void run() {
-                    List<RoleChangeColorListener> listeners = api.getListeners(RoleChangeColorListener.class);
-                    synchronized (listeners) {
-                        for (RoleChangeColorListener listener : listeners) {
-                            try {
-                                listener.onRoleChangeColor(api, role, oldColor);
-                            } catch (Throwable t) {
-                                logger.warn("Uncaught exception in RoleChangeColorListener!", t);
-                            }
-                        }
-                    }
-                }
-            });
-        }
+		Color color = new Color(roleJson.getInt("color"));
+		if (role.getColor().getRGB() != color.getRGB()) {
+			final Color oldColor = role.getColor();
+			role.setColor(color);
+			listenerExecutorService.submit(new Runnable() {
+				@Override
+				public void run() {
+					List<RoleChangeColorListener> listeners = api.getListeners(RoleChangeColorListener.class);
+					synchronized (listeners) {
+						for (RoleChangeColorListener listener : listeners) {
+							try {
+								listener.onRoleChangeColor(api, role, oldColor);
+							} catch (Throwable t) {
+								logger.warn("Uncaught exception in RoleChangeColorListener!", t);
+							}
+						}
+					}
+				}
+			});
+		}
 
-        if (role.getHoist() != roleJson.getBoolean("hoist")) {
-            role.setHoist(!role.getHoist());
-            listenerExecutorService.submit(new Runnable() {
-                @Override
-                public void run() {
-                    List<RoleChangeHoistListener> listeners = api.getListeners(RoleChangeHoistListener.class);
-                    synchronized (listeners) {
-                        for (RoleChangeHoistListener listener : listeners) {
-                            try {
-                                listener.onRoleChangeHoist(api, role, !role.getHoist());
-                            } catch (Throwable t) {
-                                logger.warn("Uncaught exception in RoleChangeHoistListener!", t);
-                            }
-                        }
-                    }
-                }
-            });
-        }
+		if (role.getHoist() != roleJson.getBoolean("hoist")) {
+			role.setHoist(!role.getHoist());
+			listenerExecutorService.submit(new Runnable() {
+				@Override
+				public void run() {
+					List<RoleChangeHoistListener> listeners = api.getListeners(RoleChangeHoistListener.class);
+					synchronized (listeners) {
+						for (RoleChangeHoistListener listener : listeners) {
+							try {
+								listener.onRoleChangeHoist(api, role, !role.getHoist());
+							} catch (Throwable t) {
+								logger.warn("Uncaught exception in RoleChangeHoistListener!", t);
+							}
+						}
+					}
+				}
+			});
+		}
 
-        synchronized (Role.class) { // we don't want strange positions
-            int position = roleJson.getInt("position");
-            if (role.getPosition() != position) {
-                final int oldPosition = role.getPosition();
-                role.setPosition(position);
-                listenerExecutorService.submit(new Runnable() {
-                    @Override
-                    public void run() {
-                        List<RoleChangePositionListener> listeners = api.getListeners(RoleChangePositionListener.class);
-                        synchronized (listeners) {
-                            for (RoleChangePositionListener listener : listeners) {
-                                try {
-                                    listener.onRoleChangePosition(api, role, oldPosition);
-                                } catch (Throwable t) {
-                                    logger.warn("Uncaught exception in RoleChangePositionListener!", t);
-                                }
-                            }
-                        }
-                    }
-                });
-            }
-        }
-    }
+		synchronized (Role.class) { // we don't want strange positions
+			int position = roleJson.getInt("position");
+			if (role.getPosition() != position) {
+				final int oldPosition = role.getPosition();
+				role.setPosition(position);
+				listenerExecutorService.submit(new Runnable() {
+					@Override
+					public void run() {
+						List<RoleChangePositionListener> listeners = api.getListeners(RoleChangePositionListener.class);
+						synchronized (listeners) {
+							for (RoleChangePositionListener listener : listeners) {
+								try {
+									listener.onRoleChangePosition(api, role, oldPosition);
+								} catch (Throwable t) {
+									logger.warn("Uncaught exception in RoleChangePositionListener!", t);
+								}
+							}
+						}
+					}
+				});
+			}
+		}
+	}
 
 }

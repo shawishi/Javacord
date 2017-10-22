@@ -27,13 +27,16 @@ import de.btobastian.javacord.listener.Listener;
  */
 public interface UserChangeNameListener extends Listener {
 
-    /**
-     * This method is called every time a user changed its name.
-     *
-     * @param api The api.
-     * @param user The user with the updated name.
-     * @param oldName The old name of the user.
-     */
-    public void onUserChangeName(DiscordAPI api, User user, String oldName);
+	/**
+	 * This method is called every time a user changed its name.
+	 *
+	 * @param api
+	 *            The api.
+	 * @param user
+	 *            The user with the updated name.
+	 * @param oldName
+	 *            The old name of the user.
+	 */
+	public void onUserChangeName(DiscordAPI api, User user, String oldName);
 
 }

@@ -19,13 +19,10 @@
 package de.btobastian.javacord.utils.handler.message;
 
 import de.btobastian.javacord.ImplDiscordAPI;
-import de.btobastian.javacord.entities.CustomEmoji;
-import de.btobastian.javacord.entities.User;
 import de.btobastian.javacord.entities.message.Message;
 import de.btobastian.javacord.entities.message.Reaction;
 import de.btobastian.javacord.entities.message.impl.ImplMessage;
 import de.btobastian.javacord.listener.message.ReactionRemoveAllListener;
-import de.btobastian.javacord.listener.message.ReactionRemoveListener;
 import de.btobastian.javacord.utils.LoggerUtil;
 import de.btobastian.javacord.utils.PacketHandler;
 import org.json.JSONObject;
@@ -38,48 +35,49 @@ import java.util.List;
  */
 public class MessageReactionRemoveAllHandler extends PacketHandler {
 
-    /**
-     * The logger of this class.
-     */
-    private static final Logger logger = LoggerUtil.getLogger(MessageReactionRemoveAllHandler.class);
+	/**
+	 * The logger of this class.
+	 */
+	private static final Logger logger = LoggerUtil.getLogger(MessageReactionRemoveAllHandler.class);
 
-    /**
-     * Creates a new instance of this class.
-     *
-     * @param api The api.
-     */
-    public MessageReactionRemoveAllHandler(ImplDiscordAPI api) {
-        super(api, true, "MESSAGE_REACTION_REMOVE_ALL");
-    }
+	/**
+	 * Creates a new instance of this class.
+	 *
+	 * @param api
+	 *            The api.
+	 */
+	public MessageReactionRemoveAllHandler(ImplDiscordAPI api) {
+		super(api, true, "MESSAGE_REACTION_REMOVE_ALL");
+	}
 
-    @Override
-    public void handle(JSONObject packet) {
-        // {"message_id":"269166028959776768","channel_id":"81402706320699392"}
-        String messageId = packet.getString("message_id");
-        final Message message = api.getMessageById(messageId);
-        if (message == null) {
-            return;
-        }
+	@Override
+	public void handle(JSONObject packet) {
+		// {"message_id":"269166028959776768","channel_id":"81402706320699392"}
+		String messageId = packet.getString("message_id");
+		final Message message = api.getMessageById(messageId);
+		if (message == null) {
+			return;
+		}
 
-        final List<Reaction> reactions = message.getReactions();
-        ((ImplMessage) message).removeAllReactionsFromCache();
+		final List<Reaction> reactions = message.getReactions();
+		((ImplMessage) message).removeAllReactionsFromCache();
 
-        listenerExecutorService.submit(new Runnable() {
-            @Override
-            public void run() {
-                List<ReactionRemoveAllListener> listeners = api.getListeners(ReactionRemoveAllListener.class);
-                synchronized (listeners) {
-                    for (ReactionRemoveAllListener listener : listeners) {
-                        try {
-                            listener.onReactionRemoveAll(api, message, reactions);
-                        } catch (Throwable t) {
-                            logger.warn("Uncaught exception in ReactionRemoveAllListener!", t);
-                        }
-                    }
-                }
-            }
-        });
+		listenerExecutorService.submit(new Runnable() {
+			@Override
+			public void run() {
+				List<ReactionRemoveAllListener> listeners = api.getListeners(ReactionRemoveAllListener.class);
+				synchronized (listeners) {
+					for (ReactionRemoveAllListener listener : listeners) {
+						try {
+							listener.onReactionRemoveAll(api, message, reactions);
+						} catch (Throwable t) {
+							logger.warn("Uncaught exception in ReactionRemoveAllListener!", t);
+						}
+					}
+				}
+			}
+		});
 
-    }
+	}
 
 }

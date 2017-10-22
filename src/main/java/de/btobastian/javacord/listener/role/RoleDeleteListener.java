@@ -27,12 +27,14 @@ import de.btobastian.javacord.listener.Listener;
  */
 public interface RoleDeleteListener extends Listener {
 
-    /**
-     * This method is called every time a new role was deleted.
-     *
-     * @param api The api.
-     * @param role The deleted role.
-     */
-    public void onRoleDelete(DiscordAPI api, Role role);
+	/**
+	 * This method is called every time a new role was deleted.
+	 *
+	 * @param api
+	 *            The api.
+	 * @param role
+	 *            The deleted role.
+	 */
+	public void onRoleDelete(DiscordAPI api, Role role);
 
 }

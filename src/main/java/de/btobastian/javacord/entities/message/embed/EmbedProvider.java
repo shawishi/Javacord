@@ -25,18 +25,18 @@ import java.net.URL;
  */
 public interface EmbedProvider {
 
-    /**
-     * Gets the name of the provider.
-     *
-     * @return The name of the provider.
-     */
-    public String getName();
+	/**
+	 * Gets the name of the provider.
+	 *
+	 * @return The name of the provider.
+	 */
+	public String getName();
 
-    /**
-     * Gets the url of the provider.
-     *
-     * @return The url of the provider.
-     */
-    public URL getUrl();
+	/**
+	 * Gets the url of the provider.
+	 *
+	 * @return The url of the provider.
+	 */
+	public URL getUrl();
 
 }

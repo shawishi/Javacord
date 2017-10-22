@@ -41,98 +41,103 @@ import java.util.List;
  */
 public class ChannelCreateHandler extends PacketHandler {
 
-    /**
-     * The logger of this class.
-     */
-    private static final Logger logger = LoggerUtil.getLogger(ChannelCreateHandler.class);
+	/**
+	 * The logger of this class.
+	 */
+	private static final Logger logger = LoggerUtil.getLogger(ChannelCreateHandler.class);
 
-    /**
-     * Creates a new instance of this class.
-     *
-     * @param api The api.
-     */
-    public ChannelCreateHandler(ImplDiscordAPI api) {
-        super(api, true, "CHANNEL_CREATE");
-    }
+	/**
+	 * Creates a new instance of this class.
+	 *
+	 * @param api
+	 *            The api.
+	 */
+	public ChannelCreateHandler(ImplDiscordAPI api) {
+		super(api, true, "CHANNEL_CREATE");
+	}
 
-    @Override
-    public void handle(JSONObject packet) {
-        int type = packet.getInt("type");
-        switch (type) {
-            case 0:
-                handleServerTextChannel(packet, api.getServerById(packet.getString("guild_id")));
-                break;
-            case 1:
-                User recipient = api.getOrCreateUser(packet.getJSONArray("recipients").getJSONObject(0));
-                ((ImplUser) recipient).setUserChannelId(packet.getString("id"));
-                break;
-            case 2:
-                handleServerVoiceChannel(packet, api.getServerById(packet.getString("guild_id")));
-                break;
-            case 3:
-                // TODO DM groups
-                break;
-            case 4:
-                break;
-            default:
-                break;
-        }
-    }
+	@Override
+	public void handle(JSONObject packet) {
+		int type = packet.getInt("type");
+		switch (type) {
+		case 0:
+			handleServerTextChannel(packet, api.getServerById(packet.getString("guild_id")));
+			break;
+		case 1:
+			User recipient = api.getOrCreateUser(packet.getJSONArray("recipients").getJSONObject(0));
+			((ImplUser) recipient).setUserChannelId(packet.getString("id"));
+			break;
+		case 2:
+			handleServerVoiceChannel(packet, api.getServerById(packet.getString("guild_id")));
+			break;
+		case 3:
+			// TODO DM groups
+			break;
+		case 4:
+			break;
+		default:
+			break;
+		}
+	}
 
-    /**
-     * Handles the server text channels.
-     *
-     * @param packet The packet (the "d"-object).
-     * @param server The server of the channel.
-     */
-    private void handleServerTextChannel(JSONObject packet, Server server) {
-        if (server.getChannelById(packet.getString("id")) != null) {
-            return;
-        }
-        final Channel channel = new ImplChannel(packet, (ImplServer) server, api);
-        listenerExecutorService.submit(new Runnable() {
-            @Override
-            public void run() {
-                List<ChannelCreateListener> listeners = api.getListeners(ChannelCreateListener.class);
-                synchronized (listeners) {
-                    for (ChannelCreateListener listener : listeners) {
-                        try {
-                            listener.onChannelCreate(api, channel);
-                        } catch (Throwable t) {
-                            logger.warn("Uncaught exception in ChannelCreateListener!", t);
-                        }
-                    }
-                }
-            }
-        });
-    }
+	/**
+	 * Handles the server text channels.
+	 *
+	 * @param packet
+	 *            The packet (the "d"-object).
+	 * @param server
+	 *            The server of the channel.
+	 */
+	private void handleServerTextChannel(JSONObject packet, Server server) {
+		if (server.getChannelById(packet.getString("id")) != null) {
+			return;
+		}
+		final Channel channel = new ImplChannel(packet, (ImplServer) server, api);
+		listenerExecutorService.submit(new Runnable() {
+			@Override
+			public void run() {
+				List<ChannelCreateListener> listeners = api.getListeners(ChannelCreateListener.class);
+				synchronized (listeners) {
+					for (ChannelCreateListener listener : listeners) {
+						try {
+							listener.onChannelCreate(api, channel);
+						} catch (Throwable t) {
+							logger.warn("Uncaught exception in ChannelCreateListener!", t);
+						}
+					}
+				}
+			}
+		});
+	}
 
-    /**
-     * Handles the server voice channels.
-     *
-     * @param packet The packet (the "d"-object).
-     * @param server The server of the channel.
-     */
-    private void handleServerVoiceChannel(JSONObject packet, Server server) {
-        if (server.getVoiceChannelById(packet.getString("id")) != null) {
-            return;
-        }
-        final VoiceChannel channel = new ImplVoiceChannel(packet, (ImplServer) server, api);
-        listenerExecutorService.submit(new Runnable() {
-            @Override
-            public void run() {
-                List<VoiceChannelCreateListener> listeners = api.getListeners(VoiceChannelCreateListener.class);
-                synchronized (listeners) {
-                    for (VoiceChannelCreateListener listener : listeners) {
-                        try {
-                            listener.onVoiceChannelCreate(api, channel);
-                        } catch (Throwable t) {
-                            logger.warn("Uncaught exception in VoiceChannelCreateListener!", t);
-                        }
-                    }
-                }
-            }
-        });
-    }
+	/**
+	 * Handles the server voice channels.
+	 *
+	 * @param packet
+	 *            The packet (the "d"-object).
+	 * @param server
+	 *            The server of the channel.
+	 */
+	private void handleServerVoiceChannel(JSONObject packet, Server server) {
+		if (server.getVoiceChannelById(packet.getString("id")) != null) {
+			return;
+		}
+		final VoiceChannel channel = new ImplVoiceChannel(packet, (ImplServer) server, api);
+		listenerExecutorService.submit(new Runnable() {
+			@Override
+			public void run() {
+				List<VoiceChannelCreateListener> listeners = api.getListeners(VoiceChannelCreateListener.class);
+				synchronized (listeners) {
+					for (VoiceChannelCreateListener listener : listeners) {
+						try {
+							listener.onVoiceChannelCreate(api, channel);
+						} catch (Throwable t) {
+							logger.warn("Uncaught exception in VoiceChannelCreateListener!", t);
+						}
+					}
+				}
+			}
+		});
+	}
 
 }

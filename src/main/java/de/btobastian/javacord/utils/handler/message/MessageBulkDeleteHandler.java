@@ -34,45 +34,46 @@ import java.util.List;
  */
 public class MessageBulkDeleteHandler extends PacketHandler {
 
-    /**
-     * The logger of this class.
-     */
-    private static final Logger logger = LoggerUtil.getLogger(MessageBulkDeleteHandler.class);
+	/**
+	 * The logger of this class.
+	 */
+	private static final Logger logger = LoggerUtil.getLogger(MessageBulkDeleteHandler.class);
 
-    /**
-     * Creates a new instance of this class.
-     *
-     * @param api The api.
-     */
-    public MessageBulkDeleteHandler(ImplDiscordAPI api) {
-        super(api, true, "MESSAGE_DELETE_BULK");
-    }
+	/**
+	 * Creates a new instance of this class.
+	 *
+	 * @param api
+	 *            The api.
+	 */
+	public MessageBulkDeleteHandler(ImplDiscordAPI api) {
+		super(api, true, "MESSAGE_DELETE_BULK");
+	}
 
-    @Override
-    public void handle(JSONObject packet) {
-        JSONArray messageIds = packet.getJSONArray("ids");
-        for (int i = 0; i < messageIds.length(); i++) {
-            String messageId = messageIds.getString(i);
-            final Message message = api.getMessageById(messageId);
-            if (message == null) {
-                return; // no cached version available
-            }
-            listenerExecutorService.submit(new Runnable() {
-                @Override
-                public void run() {
-                    List<MessageDeleteListener> listeners = api.getListeners(MessageDeleteListener.class);
-                    synchronized (listeners) {
-                        for (MessageDeleteListener listener : listeners) {
-                            try {
-                                listener.onMessageDelete(api, message);
-                            } catch (Throwable t) {
-                                logger.warn("Uncaught exception in MessageDeleteListener!", t);
-                            }
-                        }
-                    }
-                }
-            });
-        }
-    }
+	@Override
+	public void handle(JSONObject packet) {
+		JSONArray messageIds = packet.getJSONArray("ids");
+		for (int i = 0; i < messageIds.length(); i++) {
+			String messageId = messageIds.getString(i);
+			final Message message = api.getMessageById(messageId);
+			if (message == null) {
+				return; // no cached version available
+			}
+			listenerExecutorService.submit(new Runnable() {
+				@Override
+				public void run() {
+					List<MessageDeleteListener> listeners = api.getListeners(MessageDeleteListener.class);
+					synchronized (listeners) {
+						for (MessageDeleteListener listener : listeners) {
+							try {
+								listener.onMessageDelete(api, message);
+							} catch (Throwable t) {
+								logger.warn("Uncaught exception in MessageDeleteListener!", t);
+							}
+						}
+					}
+				}
+			});
+		}
+	}
 
 }

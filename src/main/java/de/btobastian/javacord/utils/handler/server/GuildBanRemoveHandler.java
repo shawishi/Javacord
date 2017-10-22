@@ -35,42 +35,43 @@ import java.util.List;
  */
 public class GuildBanRemoveHandler extends PacketHandler {
 
-    /**
-     * The logger of this class.
-     */
-    private static final Logger logger = LoggerUtil.getLogger(GuildBanRemoveHandler.class);
+	/**
+	 * The logger of this class.
+	 */
+	private static final Logger logger = LoggerUtil.getLogger(GuildBanRemoveHandler.class);
 
-    /**
-     * Creates a new instance of this class.
-     *
-     * @param api The api.
-     */
-    public GuildBanRemoveHandler(ImplDiscordAPI api) {
-        super(api, true, "GUILD_BAN_REMOVE");
-    }
+	/**
+	 * Creates a new instance of this class.
+	 *
+	 * @param api
+	 *            The api.
+	 */
+	public GuildBanRemoveHandler(ImplDiscordAPI api) {
+		super(api, true, "GUILD_BAN_REMOVE");
+	}
 
-    @Override
-    public void handle(JSONObject packet) {
-        final Server server = api.getServerById(packet.getString("guild_id"));
-        final User user = api.getOrCreateUser(packet.getJSONObject("user"));
-        if (server != null) {
-            ((ImplServer) server).removeMember(user);
-            listenerExecutorService.submit(new Runnable() {
-                @Override
-                public void run() {
-                    List<ServerMemberUnbanListener> listeners = api.getListeners(ServerMemberUnbanListener.class);
-                    synchronized (listeners) {
-                        for (ServerMemberUnbanListener listener : listeners) {
-                            try {
-                                listener.onServerMemberUnban(api, user.getId(), server);
-                            } catch (Throwable t) {
-                                logger.warn("Uncaught exception in ServerMemberUnbanListener!", t);
-                            }
-                        }
-                    }
-                }
-            });
-        }
-    }
+	@Override
+	public void handle(JSONObject packet) {
+		final Server server = api.getServerById(packet.getString("guild_id"));
+		final User user = api.getOrCreateUser(packet.getJSONObject("user"));
+		if (server != null) {
+			((ImplServer) server).removeMember(user);
+			listenerExecutorService.submit(new Runnable() {
+				@Override
+				public void run() {
+					List<ServerMemberUnbanListener> listeners = api.getListeners(ServerMemberUnbanListener.class);
+					synchronized (listeners) {
+						for (ServerMemberUnbanListener listener : listeners) {
+							try {
+								listener.onServerMemberUnban(api, user.getId(), server);
+							} catch (Throwable t) {
+								logger.warn("Uncaught exception in ServerMemberUnbanListener!", t);
+							}
+						}
+					}
+				}
+			});
+		}
+	}
 
 }

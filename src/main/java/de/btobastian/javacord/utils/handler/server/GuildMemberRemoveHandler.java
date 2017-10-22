@@ -35,43 +35,44 @@ import java.util.List;
  */
 public class GuildMemberRemoveHandler extends PacketHandler {
 
-    /**
-     * The logger of this class.
-     */
-    private static final Logger logger = LoggerUtil.getLogger(GuildMemberRemoveHandler.class);
+	/**
+	 * The logger of this class.
+	 */
+	private static final Logger logger = LoggerUtil.getLogger(GuildMemberRemoveHandler.class);
 
-    /**
-     * Creates a new instance of this class.
-     *
-     * @param api The api.
-     */
-    public GuildMemberRemoveHandler(ImplDiscordAPI api) {
-        super(api, true, "GUILD_MEMBER_REMOVE");
-    }
+	/**
+	 * Creates a new instance of this class.
+	 *
+	 * @param api
+	 *            The api.
+	 */
+	public GuildMemberRemoveHandler(ImplDiscordAPI api) {
+		super(api, true, "GUILD_MEMBER_REMOVE");
+	}
 
-    @Override
-    public void handle(JSONObject packet) {
-        final Server server = api.getServerById(packet.getString("guild_id"));
-        final User user = api.getOrCreateUser(packet.getJSONObject("user"));
-        if (server != null) {
-            ((ImplServer) server).removeMember(user);
-            ((ImplServer) server).decrementMemberCount();
-            listenerExecutorService.submit(new Runnable() {
-                @Override
-                public void run() {
-                    List<ServerMemberRemoveListener> listeners = api.getListeners(ServerMemberRemoveListener.class);
-                    synchronized (listeners) {
-                        for (ServerMemberRemoveListener listener : listeners) {
-                            try {
-                                listener.onServerMemberRemove(api, user, server);
-                            } catch (Throwable t) {
-                                logger.warn("Uncaught exception in ServerMemberRemoveListener!", t);
-                            }
-                        }
-                    }
-                }
-            });
-        }
-    }
+	@Override
+	public void handle(JSONObject packet) {
+		final Server server = api.getServerById(packet.getString("guild_id"));
+		final User user = api.getOrCreateUser(packet.getJSONObject("user"));
+		if (server != null) {
+			((ImplServer) server).removeMember(user);
+			((ImplServer) server).decrementMemberCount();
+			listenerExecutorService.submit(new Runnable() {
+				@Override
+				public void run() {
+					List<ServerMemberRemoveListener> listeners = api.getListeners(ServerMemberRemoveListener.class);
+					synchronized (listeners) {
+						for (ServerMemberRemoveListener listener : listeners) {
+							try {
+								listener.onServerMemberRemove(api, user, server);
+							} catch (Throwable t) {
+								logger.warn("Uncaught exception in ServerMemberRemoveListener!", t);
+							}
+						}
+					}
+				}
+			});
+		}
+	}
 
 }

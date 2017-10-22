@@ -25,25 +25,25 @@ import java.net.URL;
  */
 public interface EmbedVideo {
 
-    /**
-     * Gets the url of the video.
-     *
-     * @return The url of the video.
-     */
-    public URL getUrl();
+	/**
+	 * Gets the url of the video.
+	 *
+	 * @return The url of the video.
+	 */
+	public URL getUrl();
 
-    /**
-     * Gets the height of the video.
-     *
-     * @return The height of the video.
-     */
-    public int getHeight();
+	/**
+	 * Gets the height of the video.
+	 *
+	 * @return The height of the video.
+	 */
+	public int getHeight();
 
-    /**
-     * Gets the width of the video.
-     *
-     * @return The width of the video.
-     */
-    public int getWidth();
+	/**
+	 * Gets the width of the video.
+	 *
+	 * @return The width of the video.
+	 */
+	public int getWidth();
 
 }

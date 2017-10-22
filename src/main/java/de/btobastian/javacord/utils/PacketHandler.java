@@ -29,86 +29,92 @@ import java.util.concurrent.ExecutorService;
  */
 public abstract class PacketHandler {
 
-    /**
-     * The logger of this class.
-     */
-    private static final Logger logger = LoggerUtil.getLogger(PacketHandler.class);
+	/**
+	 * The logger of this class.
+	 */
+	private static final Logger logger = LoggerUtil.getLogger(PacketHandler.class);
 
-    protected final ImplDiscordAPI api;
-    private final String type;
-    private final boolean async;
-    private ExecutorService executorService;
-    protected final ExecutorService listenerExecutorService;
+	protected final ImplDiscordAPI api;
+	private final String type;
+	private final boolean async;
+	private ExecutorService executorService;
+	protected final ExecutorService listenerExecutorService;
 
-    /**
-     * Creates a new instance of this class.
-     *
-     * @param api The api.
-     * @param async Whether the packet should be handled in a new thread or in the websocket thread.
-     * @param type The type of packet the class handles.
-     */
-    public PacketHandler(ImplDiscordAPI api, boolean async, String type) {
-        this.api = api;
-        this.async = async;
-        this.type = type;
-        if (async) {
-            executorService = api.getThreadPool().getSingleThreadExecutorService("handlers");
-        }
-        listenerExecutorService = api.getThreadPool().getSingleThreadExecutorService("listeners");
-    }
+	/**
+	 * Creates a new instance of this class.
+	 *
+	 * @param api
+	 *            The api.
+	 * @param async
+	 *            Whether the packet should be handled in a new thread or in the
+	 *            websocket thread.
+	 * @param type
+	 *            The type of packet the class handles.
+	 */
+	public PacketHandler(ImplDiscordAPI api, boolean async, String type) {
+		this.api = api;
+		this.async = async;
+		this.type = type;
+		if (async) {
+			executorService = api.getThreadPool().getSingleThreadExecutorService("handlers");
+		}
+		listenerExecutorService = api.getThreadPool().getSingleThreadExecutorService("listeners");
+	}
 
-    /**
-     * Handles the packet.
-     *
-     * @param packet The packet (the "d"-object).
-     */
-    public void handlePacket(final JSONObject packet) {
-        if (async) {
-            executorService.submit(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        handle(packet);
-                    } catch (Exception e) {
-                        logger.warn("Couldn't handle packet of type {}. Please contact the developer! (packet: {})",
-                                getType(), packet.toString(), e);
-                    }
-                }
-            });
-        } else {
-            try {
-                handle(packet);
-            } catch (Exception e) {
-                logger.warn("Couldn't handle packet of type {}. Please contact the developer! (packet: {})",
-                        getType(), packet.toString(), e);
-            }
-        }
-    }
+	/**
+	 * Handles the packet.
+	 *
+	 * @param packet
+	 *            The packet (the "d"-object).
+	 */
+	public void handlePacket(final JSONObject packet) {
+		if (async) {
+			executorService.submit(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						handle(packet);
+					} catch (Exception e) {
+						logger.warn("Couldn't handle packet of type {}. Please contact the developer! (packet: {})",
+								getType(), packet.toString(), e);
+					}
+				}
+			});
+		} else {
+			try {
+				handle(packet);
+			} catch (Exception e) {
+				logger.warn("Couldn't handle packet of type {}. Please contact the developer! (packet: {})", getType(),
+						packet.toString(), e);
+			}
+		}
+	}
 
-    /**
-     * This method is called by the super class to handle the packet.
-     *
-     * @param packet The packet (the "d"-object).
-     */
-    protected abstract void handle(JSONObject packet);
+	/**
+	 * This method is called by the super class to handle the packet.
+	 *
+	 * @param packet
+	 *            The packet (the "d"-object).
+	 */
+	protected abstract void handle(JSONObject packet);
 
-    /**
-     * Gets the type of packet the handler handles.
-     *
-     * @return The type of the packet.
-     */
-    public String getType() {
-        return type;
-    }
+	/**
+	 * Gets the type of packet the handler handles.
+	 *
+	 * @return The type of the packet.
+	 */
+	public String getType() {
+		return type;
+	}
 
-    @Override
-    public int hashCode() {
-        return type.hashCode();
-    }
+	@Override
+	public int hashCode() {
+		return type.hashCode();
+	}
 
-    @Override
-    public boolean equals(Object obj) {
-        return obj instanceof PacketHandler && ((PacketHandler) obj).getType().equals(getType());
-    }
+	@Override
+	public boolean equals(Object obj) {
+		return obj instanceof PacketHandler && ((PacketHandler) obj).getType().equals(getType());
+	}
 
 }

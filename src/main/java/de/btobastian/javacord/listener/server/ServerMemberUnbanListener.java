@@ -27,13 +27,16 @@ import de.btobastian.javacord.listener.Listener;
  */
 public interface ServerMemberUnbanListener extends Listener {
 
-    /**
-     * This method is called every time a user got unbanned from a server.
-     *
-     * @param api The api.
-     * @param userId The id of the user who was unbanned.
-     * @param server The server the user was unbanned from.
-     */
-    public void onServerMemberUnban(DiscordAPI api, String userId, Server server);
+	/**
+	 * This method is called every time a user got unbanned from a server.
+	 *
+	 * @param api
+	 *            The api.
+	 * @param userId
+	 *            The id of the user who was unbanned.
+	 * @param server
+	 *            The server the user was unbanned from.
+	 */
+	public void onServerMemberUnban(DiscordAPI api, String userId, Server server);
 
 }

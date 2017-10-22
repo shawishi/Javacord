@@ -18,7 +18,6 @@
  */
 package de.btobastian.javacord.entities.message.impl;
 
-
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -46,169 +45,182 @@ import java.util.concurrent.Future;
  */
 public class ImplReaction implements Reaction {
 
-    /**
-     * The logger of this class.
-     */
-    private static final Logger logger = LoggerUtil.getLogger(ImplReaction.class);
+	/**
+	 * The logger of this class.
+	 */
+	private static final Logger logger = LoggerUtil.getLogger(ImplReaction.class);
 
-    private final ImplDiscordAPI api;
-    private final Message message;
-    private int count;
-    private boolean usedByYou;
-    private final CustomEmoji customEmoji;
-    private final String unicodeEmoji;
+	private final ImplDiscordAPI api;
+	private final Message message;
+	private int count;
+	private boolean usedByYou;
+	private final CustomEmoji customEmoji;
+	private final String unicodeEmoji;
 
-    /**
-     * Class constructor.
-     *
-     * @param api The api.
-     * @param message The message of the reaction.
-     * @param data The data of the reaction.
-     */
-    public ImplReaction(ImplDiscordAPI api, Message message, JSONObject data) {
-        this.api = api;
-        this.message = message;
-        this.count = data.getInt("count");
-        this.usedByYou = data.getBoolean("me");
+	/**
+	 * Class constructor.
+	 *
+	 * @param api
+	 *            The api.
+	 * @param message
+	 *            The message of the reaction.
+	 * @param data
+	 *            The data of the reaction.
+	 */
+	public ImplReaction(ImplDiscordAPI api, Message message, JSONObject data) {
+		this.api = api;
+		this.message = message;
+		this.count = data.getInt("count");
+		this.usedByYou = data.getBoolean("me");
 
-        JSONObject emoji = data.getJSONObject("emoji");
-        if (emoji.isNull("id")) {
-            customEmoji = null;
-            unicodeEmoji = emoji.getString("name");
-        } else {
-            unicodeEmoji = null;
-            customEmoji = message.getChannelReceiver().getServer().getCustomEmojiById(emoji.getString("id"));
-        }
-    }
+		JSONObject emoji = data.getJSONObject("emoji");
+		if (emoji.isNull("id")) {
+			customEmoji = null;
+			unicodeEmoji = emoji.getString("name");
+		} else {
+			unicodeEmoji = null;
+			customEmoji = message.getChannelReceiver().getServer().getCustomEmojiById(emoji.getString("id"));
+		}
+	}
 
-    /**
-     * Class constructor.
-     *
-     * @param api The api.
-     * @param message The message of the reaction.
-     * @param usedByYou If the reaction is used by you.
-     * @param count The count of the reaction.
-     * @param unicodeEmoji The unicode emoji or null.
-     * @param customEmoji The custom emoji or null.
-     */
-    public ImplReaction(ImplDiscordAPI api, Message message, boolean usedByYou, int count, String unicodeEmoji, CustomEmoji customEmoji) {
-        this.api = api;
-        this.message = message;
-        this.count = count;
-        this.usedByYou = usedByYou;
-        this.customEmoji = customEmoji;
-        this.unicodeEmoji = unicodeEmoji;
-    }
+	/**
+	 * Class constructor.
+	 *
+	 * @param api
+	 *            The api.
+	 * @param message
+	 *            The message of the reaction.
+	 * @param usedByYou
+	 *            If the reaction is used by you.
+	 * @param count
+	 *            The count of the reaction.
+	 * @param unicodeEmoji
+	 *            The unicode emoji or null.
+	 * @param customEmoji
+	 *            The custom emoji or null.
+	 */
+	public ImplReaction(ImplDiscordAPI api, Message message, boolean usedByYou, int count, String unicodeEmoji,
+			CustomEmoji customEmoji) {
+		this.api = api;
+		this.message = message;
+		this.count = count;
+		this.usedByYou = usedByYou;
+		this.customEmoji = customEmoji;
+		this.unicodeEmoji = unicodeEmoji;
+	}
 
-    @Override
-    public Message getMessage() {
-        return message;
-    }
+	@Override
+	public Message getMessage() {
+		return message;
+	}
 
-    @Override
-    public int getCount() {
-        return count;
-    }
+	@Override
+	public int getCount() {
+		return count;
+	}
 
-    @Override
-    public boolean isUsedByYou() {
-        return usedByYou;
-    }
+	@Override
+	public boolean isUsedByYou() {
+		return usedByYou;
+	}
 
-    @Override
-    public boolean isCustomEmoji() {
-        return customEmoji != null;
-    }
+	@Override
+	public boolean isCustomEmoji() {
+		return customEmoji != null;
+	}
 
-    @Override
-    public boolean isUnicodeEmoji() {
-        return unicodeEmoji != null;
-    }
+	@Override
+	public boolean isUnicodeEmoji() {
+		return unicodeEmoji != null;
+	}
 
-    @Override
-    public CustomEmoji getCustomEmoji() {
-        return customEmoji;
-    }
+	@Override
+	public CustomEmoji getCustomEmoji() {
+		return customEmoji;
+	}
 
-    @Override
-    public String getUnicodeEmoji() {
-        return unicodeEmoji;
-    }
+	@Override
+	public String getUnicodeEmoji() {
+		return unicodeEmoji;
+	}
 
-    @Override
-    public Future<List<User>> getUsers() {
-        return getUsers(null);
-    }
+	@Override
+	public Future<List<User>> getUsers() {
+		return getUsers(null);
+	}
 
-    @Override
-    public Future<List<User>> getUsers(FutureCallback<List<User>> callback) {
-        ListenableFuture<List<User>> future =
-                api.getThreadPool().getListeningExecutorService().submit(new Callable<List<User>>() {
-                    @Override
-                    public List<User> call() throws Exception {
-                        logger.debug("Trying to get reactors of reaction {} of message {}", ImplReaction.this, message);
-                        String reactionString = isCustomEmoji() ? getCustomEmoji().getName() + ":" + getCustomEmoji().getId() : getUnicodeEmoji();
-                        HttpResponse<JsonNode> response =
-                                Unirest.get("/channels/" + ((ImplMessage) message).getChannelId() + "/messages/" + message.getId() + "/reactions/" + reactionString)
-                                        .header("authorization", api.getToken())
-                                        .asJson();
-                        api.checkResponse(response);
-                        api.checkRateLimit(response, RateLimitType.UNKNOWN, null, message.getChannelReceiver());
-                        logger.debug("Got reactors of reaction {} of message {}", ImplReaction.this, message);
-                        JSONArray userArray = response.getBody().getArray();
-                        List<User> users = new ArrayList<>();
-                        for (int i = 0; i > userArray.length(); i++) {
-                            User user = api.getOrCreateUser(userArray.getJSONObject(i));
-                            if (user != null) {
-                                users.add(user);
-                            }
-                        }
-                        return users;
-                    }
-                });
-        if (callback != null) {
-            Futures.addCallback(future, callback);
-        }
-        return future;
-    }
+	@Override
+	public Future<List<User>> getUsers(FutureCallback<List<User>> callback) {
+		ListenableFuture<List<User>> future = api.getThreadPool().getListeningExecutorService()
+				.submit(new Callable<List<User>>() {
+					@Override
+					public List<User> call() throws Exception {
+						logger.debug("Trying to get reactors of reaction {} of message {}", ImplReaction.this, message);
+						String reactionString = isCustomEmoji()
+								? getCustomEmoji().getName() + ":" + getCustomEmoji().getId() : getUnicodeEmoji();
+						HttpResponse<JsonNode> response = Unirest
+								.get("/channels/" + ((ImplMessage) message).getChannelId() + "/messages/"
+										+ message.getId() + "/reactions/" + reactionString)
+								.header("authorization", api.getToken()).asJson();
+						api.checkResponse(response);
+						api.checkRateLimit(response, RateLimitType.UNKNOWN, null, message.getChannelReceiver());
+						logger.debug("Got reactors of reaction {} of message {}", ImplReaction.this, message);
+						JSONArray userArray = response.getBody().getArray();
+						List<User> users = new ArrayList<>();
+						for (int i = 0; i > userArray.length(); i++) {
+							User user = api.getOrCreateUser(userArray.getJSONObject(i));
+							if (user != null) {
+								users.add(user);
+							}
+						}
+						return users;
+					}
+				});
+		if (callback != null) {
+			Futures.addCallback(future, callback);
+		}
+		return future;
+	}
 
-    @Override
-    public Future<Void> removeUser(final User user) {
-        return api.getThreadPool().getExecutorService().submit(new Callable<Void>() {
-            @Override
-            public Void call() throws Exception {
-                logger.debug("Trying to remove reactor {} from reaction {} of message {}", user, ImplReaction.this, message);
-                String reactionString = isCustomEmoji() ? getCustomEmoji().getName() + ":" + getCustomEmoji().getId() : getUnicodeEmoji();
-                HttpResponse<JsonNode> response = Unirest
-                        .delete("https://discordapp.com/api/channels/" + ((ImplMessage) message).getChannelId() + "/messages/" + message.getId() + "/reactions/" + reactionString + "/" + user.getId())
-                        .header("authorization", api.getToken())
-                        .asJson();
-                api.checkResponse(response);
-                api.checkRateLimit(response, RateLimitType.UNKNOWN, null, message.getChannelReceiver());
-                logger.debug("Removed reactor {} from reaction {} of message {}", user, ImplReaction.this, message);
-                return null;
-            }
-        });
-    }
+	@Override
+	public Future<Void> removeUser(final User user) {
+		return api.getThreadPool().getExecutorService().submit(new Callable<Void>() {
+			@Override
+			public Void call() throws Exception {
+				logger.debug("Trying to remove reactor {} from reaction {} of message {}", user, ImplReaction.this,
+						message);
+				String reactionString = isCustomEmoji() ? getCustomEmoji().getName() + ":" + getCustomEmoji().getId()
+						: getUnicodeEmoji();
+				HttpResponse<JsonNode> response = Unirest
+						.delete("https://discordapp.com/api/channels/" + ((ImplMessage) message).getChannelId()
+								+ "/messages/" + message.getId() + "/reactions/" + reactionString + "/" + user.getId())
+						.header("authorization", api.getToken()).asJson();
+				api.checkResponse(response);
+				api.checkRateLimit(response, RateLimitType.UNKNOWN, null, message.getChannelReceiver());
+				logger.debug("Removed reactor {} from reaction {} of message {}", user, ImplReaction.this, message);
+				return null;
+			}
+		});
+	}
 
-    /**
-     * Increments the count.
-     */
-    public void incrementCount(boolean you) {
-        count++;
-        usedByYou = you || usedByYou;
-    }
+	/**
+	 * Increments the count.
+	 */
+	public void incrementCount(boolean you) {
+		count++;
+		usedByYou = you || usedByYou;
+	}
 
-    /**
-     * Decrements the count.
-     */
-    public void decrementCount(boolean you) {
-        count--;
-        usedByYou = !you && usedByYou;
-    }
+	/**
+	 * Decrements the count.
+	 */
+	public void decrementCount(boolean you) {
+		count--;
+		usedByYou = !you && usedByYou;
+	}
 
-    @Override
-    public String toString() {
-        return isUnicodeEmoji() ? getUnicodeEmoji() : getCustomEmoji().toString();
-    }
+	@Override
+	public String toString() {
+		return isUnicodeEmoji() ? getUnicodeEmoji() : getCustomEmoji().toString();
+	}
 }

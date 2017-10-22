@@ -28,14 +28,18 @@ import de.btobastian.javacord.listener.Listener;
  */
 public interface TypingStartListener extends Listener {
 
-    /**
-     * This method is called every time a user starts typing.
-     * Typing stops after 5 seconds or if the user sends a message.
-     *
-     * @param api The api.
-     * @param user The user who starts typing.
-     * @param channel The channel where the users is typing. <code>Null</code> if the user is typing in private a chat.
-     */
-    public void onTypingStart(DiscordAPI api, User user, Channel channel);
+	/**
+	 * This method is called every time a user starts typing. Typing stops after
+	 * 5 seconds or if the user sends a message.
+	 *
+	 * @param api
+	 *            The api.
+	 * @param user
+	 *            The user who starts typing.
+	 * @param channel
+	 *            The channel where the users is typing. <code>Null</code> if
+	 *            the user is typing in private a chat.
+	 */
+	public void onTypingStart(DiscordAPI api, User user, Channel channel);
 
 }

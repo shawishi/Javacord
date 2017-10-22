@@ -31,55 +31,57 @@ import java.net.URL;
  */
 public class ImplEmbedFooter implements EmbedFooter {
 
-    /**
-     * The logger of this class.
-     */
-    private static final Logger logger = LoggerUtil.getLogger(ImplEmbedFooter.class);
+	/**
+	 * The logger of this class.
+	 */
+	private static final Logger logger = LoggerUtil.getLogger(ImplEmbedFooter.class);
 
-    private String text;
-    private String iconUrl;
-    private String proxyIconUrl;
+	private String text;
+	private String iconUrl;
+	private String proxyIconUrl;
 
-    /**
-     * Creates a new instance of this class.
-     *
-     * @param data A JSONObject containing all necessary data.
-     */
-    public ImplEmbedFooter(JSONObject data) {
-        text = data.has("text") ? data.getString("text") : null;
-        iconUrl = data.has("icon_url") ? data.getString("icon_url") : null;
-        proxyIconUrl = data.has("proxy_icon_url") ? data.getString("proxy_icon_url") : null;
-    }
+	/**
+	 * Creates a new instance of this class.
+	 *
+	 * @param data
+	 *            A JSONObject containing all necessary data.
+	 */
+	public ImplEmbedFooter(JSONObject data) {
+		text = data.has("text") ? data.getString("text") : null;
+		iconUrl = data.has("icon_url") ? data.getString("icon_url") : null;
+		proxyIconUrl = data.has("proxy_icon_url") ? data.getString("proxy_icon_url") : null;
+	}
 
-    @Override
-    public String getText() {
-        return text;
-    }
+	@Override
+	public String getText() {
+		return text;
+	}
 
-    @Override
-    public URL getIconUrl() {
-        if (iconUrl == null) {
-            return null;
-        }
-        try {
-            return new URL(iconUrl);
-        } catch (MalformedURLException e) {
-            logger.warn("Seems like the icon url of the embed footer is malformed! Please contact the developer!", e);
-            return null;
-        }
-    }
+	@Override
+	public URL getIconUrl() {
+		if (iconUrl == null) {
+			return null;
+		}
+		try {
+			return new URL(iconUrl);
+		} catch (MalformedURLException e) {
+			logger.warn("Seems like the icon url of the embed footer is malformed! Please contact the developer!", e);
+			return null;
+		}
+	}
 
-    @Override
-    public URL getProxyIconUrl() {
-        if (proxyIconUrl == null) {
-            return null;
-        }
-        try {
-            return new URL(proxyIconUrl);
-        } catch (MalformedURLException e) {
-            logger.warn("Seems like the proxy icon url of the embed footer is malformed! Please contact the developer!", e);
-            return null;
-        }
-    }
+	@Override
+	public URL getProxyIconUrl() {
+		if (proxyIconUrl == null) {
+			return null;
+		}
+		try {
+			return new URL(proxyIconUrl);
+		} catch (MalformedURLException e) {
+			logger.warn("Seems like the proxy icon url of the embed footer is malformed! Please contact the developer!",
+					e);
+			return null;
+		}
+	}
 
 }
