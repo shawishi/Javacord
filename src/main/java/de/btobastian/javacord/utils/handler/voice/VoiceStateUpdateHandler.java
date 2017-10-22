@@ -71,13 +71,7 @@ public class VoiceStateUpdateHandler extends PacketHandler {
 		final User userPassed = user;
 		if (channelId != null) {
 			if (user.getVoiceChannel() != null) {
-				if (channelId.equals(user.getVoiceChannel().getId())) { // Probably
-																		// a
-																		// mute/unmute
-																		// event;
-																		// Ignore
-																		// for
-																		// now
+				if (channelId.equals(user.getVoiceChannel().getId())) {
 					return;
 				}
 				((ImplVoiceChannel) user.getVoiceChannel()).removeConnectedUser(user);
@@ -85,10 +79,16 @@ public class VoiceStateUpdateHandler extends PacketHandler {
 			}
 			final ImplVoiceChannel channel = (ImplVoiceChannel) api.getVoiceChannelById(channelId);
 			channel.addConnectedUser(user);
+			final VoiceChannel oldChannel = user.getVoiceChannel();
 			user.setVoiceChannel(channel);
+			final ImplUser finalUser = user;
 			listenerExecutorService.submit(new Runnable() {
 				@Override
 				public void run() {
+					if (oldChannel != null) {
+						triggerUserLeaveVoiceChannelListeners(finalUser);
+					}
+					finalUser.setVoiceChannel(channel);
 					List<UserJoinVoiceChannelListener> listeners = api.getListeners(UserJoinVoiceChannelListener.class);
 					synchronized (listeners) {
 						for (UserJoinVoiceChannelListener listener : listeners) {
@@ -101,18 +101,15 @@ public class VoiceStateUpdateHandler extends PacketHandler {
 					}
 				}
 			});
-		} else {
-			if (user.getVoiceChannel() != null) {
-				((ImplVoiceChannel) user.getVoiceChannel()).removeConnectedUser(user);
-			}
+		} else if (user.getVoiceChannel() != null) {
+			((ImplVoiceChannel) user.getVoiceChannel()).removeConnectedUser(user);
+			user.setVoiceChannel(null);
 			triggerUserLeaveVoiceChannelListeners(user);
 		}
 	}
 
-	public void triggerUserLeaveVoiceChannelListeners(ImplUser user) {
+	public void triggerUserLeaveVoiceChannelListeners(final ImplUser user) {
 		final VoiceChannel oldChannel = user.getVoiceChannel();
-		user.setVoiceChannel(null);
-		final User finalUser = user;
 		listenerExecutorService.submit(new Runnable() {
 			@Override
 			public void run() {
@@ -120,7 +117,7 @@ public class VoiceStateUpdateHandler extends PacketHandler {
 				synchronized (listeners) {
 					for (UserLeaveVoiceChannelListener listener : listeners) {
 						try {
-							listener.onUserLeaveVoiceChannel(api, finalUser, oldChannel);
+							listener.onUserLeaveVoiceChannel(api, user, oldChannel);
 						} catch (Throwable t) {
 							logger.warn("Uncaught exception in UserLeaveVoiceChannelListener!", t);
 						}

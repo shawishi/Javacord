@@ -18,34 +18,59 @@
  */
 package de.btobastian.javacord.utils;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.Future;
+import java.util.zip.DataFormatException;
+import java.util.zip.Inflater;
+
+import javax.net.ssl.SSLContext;
+
+import org.json.JSONObject;
+import org.slf4j.Logger;
+
 import com.google.common.util.concurrent.SettableFuture;
-import com.neovisionaries.ws.client.*;
+import com.neovisionaries.ws.client.WebSocket;
+import com.neovisionaries.ws.client.WebSocketAdapter;
+import com.neovisionaries.ws.client.WebSocketException;
+import com.neovisionaries.ws.client.WebSocketFactory;
+import com.neovisionaries.ws.client.WebSocketFrame;
+
 import de.btobastian.javacord.ImplDiscordAPI;
 import de.btobastian.javacord.utils.handler.ReadyHandler;
 import de.btobastian.javacord.utils.handler.ResumedHandler;
 import de.btobastian.javacord.utils.handler.channel.ChannelCreateHandler;
 import de.btobastian.javacord.utils.handler.channel.ChannelDeleteHandler;
 import de.btobastian.javacord.utils.handler.channel.ChannelUpdateHandler;
-import de.btobastian.javacord.utils.handler.message.*;
-import de.btobastian.javacord.utils.handler.server.*;
+import de.btobastian.javacord.utils.handler.message.MessageAckHandler;
+import de.btobastian.javacord.utils.handler.message.MessageBulkDeleteHandler;
+import de.btobastian.javacord.utils.handler.message.MessageCreateHandler;
+import de.btobastian.javacord.utils.handler.message.MessageDeleteHandler;
+import de.btobastian.javacord.utils.handler.message.MessageReactionAddHandler;
+import de.btobastian.javacord.utils.handler.message.MessageReactionRemoveHandler;
+import de.btobastian.javacord.utils.handler.message.MessageUpdateHandler;
+import de.btobastian.javacord.utils.handler.message.TypingStartHandler;
+import de.btobastian.javacord.utils.handler.server.GuildBanAddHandler;
+import de.btobastian.javacord.utils.handler.server.GuildBanRemoveHandler;
+import de.btobastian.javacord.utils.handler.server.GuildCreateHandler;
+import de.btobastian.javacord.utils.handler.server.GuildDeleteHandler;
+import de.btobastian.javacord.utils.handler.server.GuildMemberAddHandler;
+import de.btobastian.javacord.utils.handler.server.GuildMemberRemoveHandler;
+import de.btobastian.javacord.utils.handler.server.GuildMemberUpdateHandler;
+import de.btobastian.javacord.utils.handler.server.GuildUpdateHandler;
 import de.btobastian.javacord.utils.handler.server.role.GuildRoleCreateHandler;
 import de.btobastian.javacord.utils.handler.server.role.GuildRoleDeleteHandler;
 import de.btobastian.javacord.utils.handler.server.role.GuildRoleUpdateHandler;
 import de.btobastian.javacord.utils.handler.user.PresenceUpdateHandler;
 import de.btobastian.javacord.utils.handler.user.UserGuildSettingsUpdateHandler;
 import de.btobastian.javacord.utils.handler.voice.VoiceStateUpdateHandler;
-import org.json.JSONObject;
-import org.slf4j.Logger;
-
-import javax.net.ssl.SSLContext;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.security.NoSuchAlgorithmException;
-import java.util.*;
-import java.util.concurrent.Future;
-import java.util.zip.DataFormatException;
-import java.util.zip.Inflater;
 
 /**
  * The main websocket adapter.
@@ -70,16 +95,12 @@ public class DiscordWebsocketAdapter extends WebSocketAdapter {
 	private int lastSeq = -1;
 	private String sessionId = null;
 
-	private boolean heartbeatAckReceived = false;
-
 	private boolean reconnect = true;
 
 	public DiscordWebsocketAdapter(ImplDiscordAPI api, String gateway) {
 		this.api = api;
 		this.gateway = gateway;
-
 		registerHandlers();
-
 		connect();
 	}
 
@@ -137,18 +158,15 @@ public class DiscordWebsocketAdapter extends WebSocketAdapter {
 				break;
 			}
 		}
-
 		if (!ready.isDone()) {
 			ready.set(false);
 			return;
 		}
-
 		// Reconnect
 		if (heartbeatTimer != null) {
 			heartbeatTimer.cancel();
 			heartbeatTimer = null;
 		}
-
 		if (reconnect) {
 			connect();
 		}
@@ -173,13 +191,11 @@ public class DiscordWebsocketAdapter extends WebSocketAdapter {
 
 			if (type.equals("RESUMED")) {
 				// We are the one who send the first heartbeat
-				heartbeatAckReceived = true;
 				heartbeatTimer = startHeartbeat(websocket, heartbeatInterval);
 				logger.debug("Received RESUMED packet");
 			}
 			if (type.equals("READY") && sessionId == null) {
 				// We are the one who send the first heartbeat
-				heartbeatAckReceived = true;
 				heartbeatTimer = startHeartbeat(websocket, heartbeatInterval);
 				sessionId = packet.getJSONObject("d").getString("session_id");
 				if (api.isWaitingForServersOnStartup()) {
@@ -208,7 +224,6 @@ public class DiscordWebsocketAdapter extends WebSocketAdapter {
 				}
 				logger.debug("Received READY packet");
 			} else if (type.equals("READY")) {
-				heartbeatAckReceived = true;
 				heartbeatTimer = startHeartbeat(websocket, heartbeatInterval);
 			}
 			break;
@@ -231,7 +246,6 @@ public class DiscordWebsocketAdapter extends WebSocketAdapter {
 			logger.debug("Received HELLO packet");
 			break;
 		case 11:
-			heartbeatAckReceived = true;
 			break;
 		default:
 			logger.debug("Received unknown packet (op: {}, content: {})", op, packet.toString());
@@ -282,7 +296,6 @@ public class DiscordWebsocketAdapter extends WebSocketAdapter {
 			@Override
 			public void run() {
 				/* if (heartbeatAckReceived) { temporally removed */
-				heartbeatAckReceived = false;
 				sendHeartbeat(websocket);
 				logger.debug("Sent heartbeat (interval: {})", heartbeatInterval);
 				/*
