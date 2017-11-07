@@ -123,6 +123,10 @@ public class ImplMessage implements Message {
 	 *            The api of this server.
 	 */
 	public ImplMessage(JSONObject data, ImplDiscordAPI api, MessageReceiver receiver) {
+		this(data, api, receiver, true);
+	}
+
+	public ImplMessage(JSONObject data, ImplDiscordAPI api, MessageReceiver receiver, boolean addAuthorToServer) {
 		this.api = api;
 
 		id = data.getString("id");
