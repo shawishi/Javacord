@@ -223,7 +223,9 @@ public class ImplMessage implements Message {
 
 		if (getChannelReceiver() != null) {
 			ImplServer server = (ImplServer) getChannelReceiver().getServer();
-			server.addMember(author);
+			if (addAuthorToServer) {
+				server.addMember(author);
+			}
 
 			JSONArray mentionRoles = data.getJSONArray("mention_roles");
 			for (int i = 0; i < mentionRoles.length(); i++) {
