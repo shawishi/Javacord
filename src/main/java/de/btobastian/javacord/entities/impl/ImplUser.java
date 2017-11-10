@@ -258,7 +258,7 @@ public class ImplUser implements User {
 			try {
 				return new URL(
 						"https://discordapp.com/assets/" + UGLY_DEFAULT_AVATARS.values()[Integer.parseInt(discriminator)
-								% UGLY_DEFAULT_AVATARS.values().length].toString() + ".png");
+								% UGLY_DEFAULT_AVATARS.values().length].getId() + ".png");
 			} catch (MalformedURLException e) {
 				logger.warn("Seems like the url of the [default] avatar is malformed! Please contact the developer!",
 						e);
