@@ -21,6 +21,7 @@ package de.btobastian.javacord.utils.handler.user;
 import java.util.List;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 
@@ -130,7 +131,12 @@ public class PresenceUpdateHandler extends PacketHandler {
 
 		// check avatar
 		if (jUser.has("avatar")) {
-			String hash = jUser.getString("avatar");
+			String hash;
+			try {
+				hash = jUser.getString("avatar");
+			} catch (JSONException e) {
+				hash = null;
+			}
 			if (!user.getAvatarId().equals(hash)) {
 				final String oldHash = user.getAvatarId();
 				((ImplUser) user).setAvatarId(hash);

@@ -18,6 +18,28 @@
  */
 package de.btobastian.javacord.entities.impl;
 
+import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
+
+import javax.imageio.ImageIO;
+import javax.net.ssl.HttpsURLConnection;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -25,6 +47,7 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.request.body.MultipartBody;
+
 import de.btobastian.javacord.ImplDiscordAPI;
 import de.btobastian.javacord.Javacord;
 import de.btobastian.javacord.entities.Server;
@@ -41,19 +64,6 @@ import de.btobastian.javacord.entities.permissions.Role;
 import de.btobastian.javacord.utils.LoggerUtil;
 import de.btobastian.javacord.utils.SnowflakeUtil;
 import de.btobastian.javacord.utils.ratelimits.RateLimitType;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.slf4j.Logger;
-
-import javax.imageio.ImageIO;
-import javax.net.ssl.HttpsURLConnection;
-import java.awt.image.BufferedImage;
-import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.*;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
 
 /**
  * The implementation of the user interface.
@@ -77,6 +87,26 @@ public class ImplUser implements User {
 	private final boolean bot;
 	private UserStatus status = UserStatus.OFFLINE;
 	private VoiceChannel voiceChannel = null;
+
+	private enum UGLY_DEFAULT_AVATARS {
+
+		BLURPLE("6debd47ed13483642cf09e832ed0bc1b"), //
+		GREY("322c936a8c8be1b803cd94861bdfa868"), //
+		GREEN("dd4dbc0016779df1378e7812eabaa04d"), //
+		ORANGE("0e291f67c9274a1abdddeb3fd919cbaa"), //
+		RED("1cbd08c76f8af6dddce02c5138971129");
+
+		private UGLY_DEFAULT_AVATARS(String id) {
+			this.id = id;
+		}
+
+		private final String id;
+
+		public String getId() {
+			return this.id;
+		}
+
+	}
 
 	/**
 	 * Creates a new instance of this class.
@@ -172,11 +202,7 @@ public class ImplUser implements User {
 					@Override
 					public byte[] call() throws Exception {
 						logger.debug("Trying to get avatar from user {}", ImplUser.this);
-						if (avatarId == null) {
-							logger.debug("User {} seems to have no avatar. Returning empty array!", ImplUser.this);
-							return new byte[0];
-						}
-						URL url = new URL("https://discordapp.com/api/users/" + id + "/avatars/" + avatarId + ".jpg");
+						URL url = getAvatarUrl();
 						HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
 						conn.setRequestMethod("GET");
 						conn.setRequestProperty("Content-Type", "application/json; charset=utf-8");
@@ -229,7 +255,15 @@ public class ImplUser implements User {
 	@Override
 	public URL getAvatarUrl() {
 		if (avatarId == null) {
-			return null;
+			try {
+				return new URL(
+						"https://discordapp.com/assets/" + UGLY_DEFAULT_AVATARS.values()[Integer.parseInt(discriminator)
+								% UGLY_DEFAULT_AVATARS.values().length].toString() + ".png");
+			} catch (MalformedURLException e) {
+				logger.warn("Seems like the url of the [default] avatar is malformed! Please contact the developer!",
+						e);
+				return null;
+			}
 		}
 		try {
 			return new URL("https://discordapp.com/api/users/" + id + "/avatars/" + avatarId + ".jpg");
