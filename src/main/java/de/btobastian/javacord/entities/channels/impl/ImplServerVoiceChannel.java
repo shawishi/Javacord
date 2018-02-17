@@ -62,11 +62,11 @@ public class ImplServerVoiceChannel implements ServerVoiceChannel {
      */
     private final ConcurrentHashMap<Long, Permissions> overwrittenRolePermissions = new ConcurrentHashMap<>();
 
-	/**
-	 * List of users connected to this voice-channel.
-	 */
-	private final List<User> connectedUsers = new ArrayList<>();
-	
+    /**
+     * List of users connected to this voice-channel.
+     */
+    private final List<User> connectedUsers = new ArrayList<>();
+
     /**
      * Creates a new server voice channel object.
      *
@@ -178,10 +178,10 @@ public class ImplServerVoiceChannel implements ServerVoiceChannel {
         return getServer().getChannelCategoryById(parentId);
     }
 
-	@Override
-	public List<User> getConnectedUsers() {
-		return this.connectedUsers;
-	}
+    @Override
+    public List<User> getConnectedUsers() {
+        return this.connectedUsers;
+    }
 
     @Override
     public String toString() {

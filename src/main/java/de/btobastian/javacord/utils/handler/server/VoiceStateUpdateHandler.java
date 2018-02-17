@@ -1,7 +1,6 @@
 package de.btobastian.javacord.utils.handler.server;
 
 import com.fasterxml.jackson.databind.JsonNode;
-
 import de.btobastian.javacord.DiscordApi;
 import de.btobastian.javacord.entities.channels.VoiceChannel;
 import de.btobastian.javacord.entities.impl.ImplUser;
@@ -17,8 +16,7 @@ public class VoiceStateUpdateHandler extends PacketHandler {
     /**
      * Creates a new instance of this class.
      *
-     * @param api
-     *            The api.
+     * @param api The api.
      */
     public VoiceStateUpdateHandler(DiscordApi api) {
         super(api, true, "VOICE_STATE_UPDATE");

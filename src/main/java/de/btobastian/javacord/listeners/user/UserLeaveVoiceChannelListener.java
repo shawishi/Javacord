@@ -11,8 +11,7 @@ public interface UserLeaveVoiceChannelListener {
     /**
      * This method is called every time a user joined a voice-channel.
      *
-     * @param event
-     *            The event
+     * @param event The event
      */
     void onUserLeaveVoiceChannel(UserLeaveVoiceChannelEvent event);
 

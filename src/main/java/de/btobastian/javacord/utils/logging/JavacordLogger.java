@@ -139,6 +139,7 @@ public class JavacordLogger extends MarkerIgnoringBase {
 
     @Override
     final public void info(String msg, Throwable t) {
+        LogRecord record = new LogRecord(Level.INFO, msg);
         log("INFO", msg, t);
     }
 

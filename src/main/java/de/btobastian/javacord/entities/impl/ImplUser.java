@@ -1,16 +1,7 @@
 package de.btobastian.javacord.entities.impl;
 
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-
-import org.slf4j.Logger;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-
 import de.btobastian.javacord.DiscordApi;
 import de.btobastian.javacord.ImplDiscordApi;
 import de.btobastian.javacord.entities.Activity;
@@ -26,6 +17,13 @@ import de.btobastian.javacord.utils.logging.LoggerUtil;
 import de.btobastian.javacord.utils.rest.RestEndpoint;
 import de.btobastian.javacord.utils.rest.RestMethod;
 import de.btobastian.javacord.utils.rest.RestRequest;
+import org.slf4j.Logger;
+
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * The implementation of {@link User}.
@@ -90,22 +88,20 @@ public class ImplUser implements User {
     /**
      * Creates a new user.
      *
-     * @param api
-     *            The discord api instance.
-     * @param data
-     *            The json data of the user.
-     * @param addToCache
-     *            Determines whether this should be cached.
+     * @param api The discord api instance.
+     * @param data The json data of the user.
+     * @param addToCache Determines whether this should be cached.
      */
     public ImplUser(ImplDiscordApi api, JsonNode data, boolean addToCache) {
         this.api = api;
-        this.id = Long.parseLong(data.get("id").asText());
-        this.name = data.get("username").asText();
-        this.discriminator = data.get("discriminator").asText();
+
+        id = Long.parseLong(data.get("id").asText());
+        name = data.get("username").asText();
+        discriminator = data.get("discriminator").asText();
         if (data.has("avatar") && !data.get("avatar").isNull()) {
             avatarHash = data.get("avatar").asText();
         }
-        this.bot = data.has("bot") && data.get("bot").asBoolean();
+        bot = data.has("bot") && data.get("bot").asBoolean();
         if (addToCache) {
             api.addUserToCache(this);
         }
@@ -118,8 +114,7 @@ public class ImplUser implements User {
     /**
      * Sets the private channel with the user.
      *
-     * @param channel
-     *            The channel to set.
+     * @param channel The channel to set.
      */
     public void setChannel(PrivateChannel channel) {
         this.channel = channel;
@@ -128,8 +123,7 @@ public class ImplUser implements User {
     /**
      * Sets the activity of the user.
      *
-     * @param activity
-     *            The activity to set.
+     * @param activity The activity to set.
      */
     public void setActivity(Activity activity) {
         this.activity = activity;
@@ -138,8 +132,7 @@ public class ImplUser implements User {
     /**
      * Sets the status of the user.
      *
-     * @param status
-     *            The status to set.
+     * @param status The status to set.
      */
     public void setStatus(UserStatus status) {
         this.status = status;
@@ -148,15 +141,15 @@ public class ImplUser implements User {
     /**
      * Sets the name of the user.
      *
-     * @param name
-     *            The name to set.
+     * @param name The name to set.
      */
     public void setName(String name) {
         this.name = name;
     }
 
     /**
-     * Gets the avatar hash of the user. Might be <code>null</code>.
+     * Gets the avatar hash of the user.
+     * Might be <code>null</code>.
      *
      * @return The avatar hash of the user.
      */
@@ -167,8 +160,7 @@ public class ImplUser implements User {
     /**
      * Sets the avatar hash of the user.
      *
-     * @param avatarHash
-     *            The avatar hash to set.
+     * @param avatarHash The avatar hash to set.
      */
     public void setAvatarHash(String avatarHash) {
         this.avatarHash = avatarHash;
@@ -177,8 +169,7 @@ public class ImplUser implements User {
     /**
      * Gets or creates a new private channel.
      *
-     * @param data
-     *            The data of the private channel.
+     * @param data The data of the private channel.
      * @return The private channel for the given data.
      */
     public PrivateChannel getOrCreateChannel(JsonNode data) {
@@ -217,9 +208,8 @@ public class ImplUser implements User {
 
     /**
      * Sets the voice-channel this user is connected to. Might be <code>null</code>.
-     * 
-     * @param channel
-     *            The voice-channel this user is connected to.
+     *
+     * @param channel The voice-channel this user is connected to.
      */
     public void setConnectedVoiceChannel(VoiceChannel channel) {
         connectedVoiceChannel = channel;
@@ -234,8 +224,8 @@ public class ImplUser implements User {
     public Icon getAvatar() {
         String url = "https://cdn.discordapp.com/embed/avatars/" + Integer.parseInt(discriminator) % 5 + ".png";
         if (avatarHash != null) {
-            url = "https://cdn.discordapp.com/avatars/" + getId() + "/" + avatarHash
-                    + (avatarHash.startsWith("a_") ? ".gif" : ".png");
+            url = "https://cdn.discordapp.com/avatars/" + getId() + "/" + avatarHash +
+                    (avatarHash.startsWith("a_") ? ".gif" : ".png");
         }
         try {
             return new ImplIcon(getApi(), new URL(url));
@@ -276,11 +266,12 @@ public class ImplUser implements User {
     }
 
     @Override
-    public CompletableFuture<Message> sendMessage(String content, EmbedBuilder embed, boolean tts, String nonce,
-            InputStream stream, String fileName) {
+    public CompletableFuture<Message> sendMessage(
+            String content, EmbedBuilder embed, boolean tts, String nonce, InputStream stream, String fileName) {
         return openPrivateChannel().thenApplyAsync(
                 channel -> channel.sendMessage(content, embed, tts, nonce, stream, fileName).join(),
-                api.getThreadPool().getExecutorService());
+                api.getThreadPool().getExecutorService()
+        );
     }
 
     @Override
